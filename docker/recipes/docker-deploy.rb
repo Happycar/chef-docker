@@ -40,7 +40,7 @@ node[:deploy].each do |application, deploy|
   bash "create-path-to-mount" do
     user "root"
     code <<-EOH
-     mkdir -p deploy[:environment_variables][:host_code_path]
+     mkdir -p #{deploy[:environment_variables][:host_code_path]}
     EOH
   end
 
@@ -48,7 +48,7 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      docker run #{dockerenvs} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -v deploy[:environment_variables][:host_code_path]:deploy[:environment_variables][:docker_mount_path] -d #{deploy[:application]}
+      docker run #{dockerenvs} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -v #{deploy[:environment_variables][:host_code_path]}:#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:application]}
     EOH
   end
 

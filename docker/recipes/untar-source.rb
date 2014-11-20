@@ -38,7 +38,7 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-     mv temporary/* deploy[:environment_variables][:host_code_path]
+     mv temporary/* #{deploy[:environment_variables][:host_code_path]}
     EOH
   end
 
