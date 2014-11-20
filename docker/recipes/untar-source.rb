@@ -18,8 +18,6 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  Chef::Log.debug("Before untar")
-
   bash "untar-code" do
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
@@ -28,13 +26,11 @@ node[:deploy].each do |application, deploy|
     EOH
   end
 
-  Chef::Log.debug("Before file moving")
-
-  bash "cleanup-mess" do
+  bash "move-code-to-mounted-folder" do
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-     mv temporary/* #{deploy[:deploy_to]}/current
+     mv temporary/* deploy[:environment_variables][:host_code_path]
     EOH
   end
 
