@@ -1,5 +1,5 @@
 include_recipe 'deploy'
-Chef::Log.debug("The recipe actuallz starts")
+
 node[:deploy].each do |application, deploy|
 
   if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
@@ -21,15 +21,21 @@ node[:deploy].each do |application, deploy|
   Chef::Log.debug("Before untar")
 
   bash "untar-code" do
+    user "root"
     cwd "#{deploy[:deploy_to]}/current"
-    command "for a in `ls -1 *.tar.gz`; do tar -zxvf $a; done"
+    code <<-EOH
+         for a in `ls -1 *.tar.gz`; do tar -zxvf $a; done
+    EOH
   end
 
   Chef::Log.debug("Before file moving")
-  
+
   bash "cleanup-mess" do
+    user "root"
     cwd "#{deploy[:deploy_to]}/current"
-    command "mv temporary/* #{deploy[:deploy_to]}/current"
+    code <<-EOH
+     mv temporary/* #{deploy[:deploy_to]}/current
+    EOH
   end
 
 end
