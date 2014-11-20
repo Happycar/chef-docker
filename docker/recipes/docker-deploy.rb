@@ -22,12 +22,13 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      if docker ps | grep #{deploy[:application]}; 
+      if docker ps | grep #{deploy[:application]};
       then
         docker stop #{deploy[:application]}
         sleep 3
       else
         if find #{deploy[:deploy_to]}/current -name 'Dockerfile'
+        then
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
         fi
       fi
