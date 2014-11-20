@@ -27,10 +27,10 @@ node[:deploy].each do |application, deploy|
         docker stop #{deploy[:application]}
         sleep 3
       else
-        if find #{deploy[:deploy_to]}/current -name 'Dockerfile'
-        then
+        for i in $(find . -name 'Dockerfile' );
+        do
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
-        fi
+        done
       fi
     EOH
   end
