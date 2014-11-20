@@ -5,5 +5,5 @@ end
 
 execute "cleanup-mess" do
   cwd "#{deploy[:deploy_to]}"
-  command "mv temporary/* " + #{deploy[:deploy_to]}
+  command "mv temporary/* #{deploy[:deploy_to]}"
 end
