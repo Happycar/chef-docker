@@ -47,7 +47,14 @@ node[:deploy].each do |application, deploy|
   deploy[:environment_variables].each do |key, value|
     dockerenvs=dockerenvs+" -e "+key+"="+value
   end
-  
+
+  bash "create-path-to-mount" do
+    user "root"
+    code <<-EOH
+     mkdir -p deploy[:environment_variables][:host_code_path]
+    EOH
+  end
+
   bash "docker-run" do
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
