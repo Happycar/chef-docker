@@ -18,11 +18,10 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  bash "untar-code" do
+  bash "create-path-to-mount" do
     user "root"
-    cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-         for a in `ls -1 *.tar.gz`; do tar -zxvf $a; done
+     mkdir -p #{deploy[:environment_variables][:host_code_path]}
     EOH
   end
 

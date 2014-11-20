@@ -27,7 +27,9 @@ node[:deploy].each do |application, deploy|
         docker stop #{deploy[:application]}
         sleep 3
       else
-        docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
+        if find #{deploy[:deploy_to]}/current -name 'Dockerfile'
+            docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
+        fi
       fi
     EOH
   end
@@ -38,11 +40,19 @@ node[:deploy].each do |application, deploy|
   end
 
   bash "create-path-to-mount" do
-    user "root"
-    code <<-EOH
-     mkdir -p #{deploy[:environment_variables][:host_code_path]}
-    EOH
-  end
+      user "root"
+      code <<-EOH
+       mkdir -p #{deploy[:environment_variables][:host_code_path]}
+      EOH
+    end
+
+    bash "clear-mounted-path" do
+        user "root"
+        cwd "#{deploy[:environment_variables][:host_code_path]}"
+        code <<-EOH
+         rm -rf *
+        EOH
+      end
 
   bash "docker-run" do
     user "root"
