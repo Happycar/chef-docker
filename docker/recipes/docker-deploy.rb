@@ -20,29 +20,18 @@ node[:deploy].each do |application, deploy|
 
   bash "docker-cleanup" do
     user "root"
+    cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
       if docker ps | grep #{deploy[:application]}; 
       then
         docker stop #{deploy[:application]}
         sleep 3
-        docker rm #{deploy[:application]}
-        sleep 3
-      fi
-      if docker images | grep #{deploy[:application]}; 
-      then
-        docker rmi #{deploy[:application]}
+      else
+        docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
       fi
     EOH
   end
 
-  bash "docker-build" do
-    user "root"
-    cwd "#{deploy[:deploy_to]}/current"
-    code <<-EOH
-     docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
-    EOH
-  end
-  
   dockerenvs = " "
   deploy[:environment_variables].each do |key, value|
     dockerenvs=dockerenvs+" -e "+key+"="+value
