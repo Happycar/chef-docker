@@ -39,9 +39,11 @@ node[:deploy].each do |application, deploy|
       then
         docker stop #{deploy[:application]}
         sleep 3
+        docker rm #{deploy[:application]}
+        sleep 3
       else
         dockerfiles = $(find . -name 'Dockerfile' )
-        if (#dockerfiles[@] -eq 0}
+        if (#dockerfiles[@] -eq 0)
         then
             cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
         fi
