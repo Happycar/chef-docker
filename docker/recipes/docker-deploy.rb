@@ -55,7 +55,7 @@ node[:deploy].each do |application, deploy|
       else
         for i in $(find . -name 'Dockerfile' );
         do
-            docker rmi #{deploy[:application]}
+            docker rmi $(docker images -q)
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
         done
       fi
