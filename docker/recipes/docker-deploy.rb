@@ -31,6 +31,18 @@ node[:deploy].each do |application, deploy|
       EOH
     end
 
+  bash "copy code" do
+        user "root"
+        cwd "#{deploy[:deploy_to]}/current"
+        code <<-EOH
+         DOCKERS = find . -name 'Dockerfile' | wc -l
+         if [[ $DOCKERS -eq 0 ]]
+            then
+                cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
+            fi
+        EOH
+  end
+
   bash "docker-cleanup" do
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
@@ -42,11 +54,6 @@ node[:deploy].each do |application, deploy|
         docker rm #{deploy[:application]}
         sleep 3
       else
-        DOCKERS = find . -name 'Dockerfile' | wc -l
-        if [[ $DOCKERS -eq 0 ]]
-        then
-            cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
-        fi
         for i in $(find . -name 'Dockerfile' );
         do
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
