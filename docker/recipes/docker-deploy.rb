@@ -42,8 +42,8 @@ node[:deploy].each do |application, deploy|
         docker rm #{deploy[:application]}
         sleep 3
       else
-        dockerfiles = find . -name 'Dockerfile' | wc -l
-        if $ [[ dockerfiles == 0 ]]
+        DOCKERS = find . -name 'Dockerfile' | wc -l
+        if [[ $DOCKERS -eq 0 ]]
         then
             cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
         fi
