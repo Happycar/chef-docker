@@ -27,11 +27,10 @@ node[:deploy].each do |application, deploy|
 
   bash "move-code-to-mounted-folder" do
     user "root"
-    cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-     if ! -n "#{deploy[:deploy_to]}/current/" + "Dockerfile"
+     if ! -e "#{deploy[:deploy_to]}/current/" + "Dockerfile"
      then
-        mv * #{deploy[:environment_variables][:host_code_path]}
+        cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
      fi
     EOH
   end
