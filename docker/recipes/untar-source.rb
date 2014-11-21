@@ -37,7 +37,10 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-     mv * #{deploy[:environment_variables][:host_code_path]}
+     if ! find . -name 'Dockerfile'
+     then
+        mv * #{deploy[:environment_variables][:host_code_path]}
+     fi
     EOH
   end
 
