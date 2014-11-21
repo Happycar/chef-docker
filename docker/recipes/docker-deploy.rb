@@ -18,6 +18,19 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
+
+  dockerenvs = " "
+  deploy[:environment_variables].each do |key, value|
+    dockerenvs=dockerenvs+" -e "+key+"="+value
+  end
+
+   bash "create-path-to-mount-if-not-exist" do
+      user "root"
+      code <<-EOH
+       mkdir -p #{deploy[:environment_variables][:host_code_path]}
+      EOH
+    end
+
   bash "docker-cleanup" do
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
@@ -27,17 +40,17 @@ node[:deploy].each do |application, deploy|
         docker stop #{deploy[:application]}
         sleep 3
       else
+        dockerfiles = $(find . -name 'Dockerfile' )
+        if (#dockerfiles[@] -eq 0}
+        then
+            cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
+        fi
         for i in $(find . -name 'Dockerfile' );
         do
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
         done
       fi
     EOH
-  end
-
-  dockerenvs = " "
-  deploy[:environment_variables].each do |key, value|
-    dockerenvs=dockerenvs+" -e "+key+"="+value
   end
 
   bash "docker-run" do
