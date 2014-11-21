@@ -34,8 +34,7 @@ node[:deploy].each do |application, deploy|
   bash "copy-code" do
         user "root"
         code <<-EOH
-         DOCKERS=find #{deploy[:deploy_to]}/current/ -maxdepth 1 -type f -name 'Dockerfile' | wc -l
-         if [[ $DOCKERS -eq 0 ]]
+         if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
@@ -54,12 +53,9 @@ node[:deploy].each do |application, deploy|
         docker rm #{deploy[:application]}
         sleep 3
       else
-        if docker images | grep #{deploy[:application]};
-        then
-            docker rmi #{deploy[:application]}
-        fi
         for i in $(find . -name 'Dockerfile' );
         do
+            docker rmi #{deploy[:application]}
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
         done
       fi
