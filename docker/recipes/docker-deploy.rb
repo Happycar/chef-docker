@@ -31,11 +31,10 @@ node[:deploy].each do |application, deploy|
       EOH
     end
 
-  bash "copy code" do
+  bash "copy-code" do
         user "root"
-        cwd "#{deploy[:deploy_to]}/current"
         code <<-EOH
-         DOCKERS = find . -name 'Dockerfile' | wc -l
+         DOCKERS=find #{deploy[:deploy_to]}/current/ -maxdepth 1 -type f -name 'Dockerfile' | wc -l
          if [[ $DOCKERS -eq 0 ]]
          then
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
@@ -48,13 +47,17 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      if docker ps | grep #{deploy[:application]};
+      if [[ docker ps | grep #{deploy[:application]} ]] &&
       then
         docker stop #{deploy[:application]}
         sleep 3
         docker rm #{deploy[:application]}
         sleep 3
       else
+        if docker images | grep #{deploy[:application]};
+        then
+            docker rmi #{deploy[:application]}
+        fi
         for i in $(find . -name 'Dockerfile' );
         do
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
@@ -67,7 +70,7 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      if docker images | grep #{deploy[:application]};
+      if docker images | grep #{deploy[:application]}
       then
         docker run #{dockerenvs} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:application]}
       fi
