@@ -38,6 +38,7 @@ node[:deploy].each do |application, deploy|
          DOCKERS = find . -name 'Dockerfile' | wc -l
          if [[ $DOCKERS -eq 0 ]]
             then
+                rm -rf #{deploy[:environment_variables][:host_code_path]}/*
                 cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
             fi
         EOH
