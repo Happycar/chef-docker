@@ -46,13 +46,17 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      if docker ps | grep #{deploy[:application]};
+      if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
       then
+        Chef::Log.debug("Code being deployed - just stop the container")
+        next
         docker stop #{deploy[:application]}
         sleep 3
         docker rm #{deploy[:application]}
         sleep 3
       else
+        Chef::Log.debug("Docker being deployed - cleanup images and rebuild")
+        next
         for i in $(find . -name 'Dockerfile' );
         do
             docker rm $(docker ps -a -q)
