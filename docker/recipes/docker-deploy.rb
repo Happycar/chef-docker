@@ -32,7 +32,7 @@ node[:deploy].each do |application, deploy|
     end
 
   bash "copy-code" do
-        user "root"
+        user "www-data"
         code <<-EOH
          if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
