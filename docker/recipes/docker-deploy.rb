@@ -57,8 +57,8 @@ node[:deploy].each do |application, deploy|
         echo "Docker being deployed - cleanup images and rebuild"
         for i in $(find . -name 'Dockerfile' );
         do
-            docker rm $(docker ps -a -q)
-            docker rmi $(docker images -q)
+            docker rm $(sudo docker ps -a -q)
+            docker rmi $(sudo docker images -q)
             docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
         done
       fi
