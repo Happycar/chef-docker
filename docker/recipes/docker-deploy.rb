@@ -24,6 +24,14 @@ node[:deploy].each do |application, deploy|
     dockerenvs=dockerenvs+" -e "+key+"="+value
   end
 
+   bash "give-rights-to-deploy" do
+         user "root"
+         code <<-EOH
+          chown deploy:www-data /var/www
+         EOH
+       end
+
+
    bash "create-path-to-mount-if-not-exist" do
       user "deploy"
       code <<-EOH
