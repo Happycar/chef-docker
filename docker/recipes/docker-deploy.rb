@@ -25,19 +25,19 @@ node[:deploy].each do |application, deploy|
   end
 
    bash "create-path-to-mount-if-not-exist" do
-      user "root"
+      user "deploy"
       code <<-EOH
        mkdir -p #{deploy[:environment_variables][:host_code_path]}
       EOH
     end
 
   bash "copy-code" do
-        user "www-data"
+        user "deploy"
         code <<-EOH
          if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
-           sudo rm -rf #{deploy[:environment_variables][:host_code_path]}/*
-           sudo cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
+           rm -rf #{deploy[:environment_variables][:host_code_path]}/*
+           cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
          fi
         EOH
   end
