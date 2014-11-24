@@ -36,8 +36,8 @@ node[:deploy].each do |application, deploy|
         code <<-EOH
          if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
-           rm -rf #{deploy[:environment_variables][:host_code_path]}/*
-           cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
+           sudo rm -rf #{deploy[:environment_variables][:host_code_path]}/*
+           sudo cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
          fi
         EOH
   end
