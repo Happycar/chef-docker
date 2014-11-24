@@ -27,20 +27,20 @@ node[:deploy].each do |application, deploy|
    bash "give-rights-to-deploy" do
          user "root"
          code <<-EOH
-          chown deploy:www-data /var/www/
+          chown www-data:www-data /var/www/
          EOH
        end
 
 
    bash "create-path-to-mount-if-not-exist" do
-      user "deploy"
+      user "root"
       code <<-EOH
        mkdir -p #{deploy[:environment_variables][:host_code_path]}
       EOH
     end
 
   bash "copy-code" do
-        user "deploy"
+        user "root"
         code <<-EOH
          if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
