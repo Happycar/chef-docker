@@ -46,6 +46,7 @@ node[:deploy].each do |application, deploy|
          then
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/* #{deploy[:environment_variables][:host_code_path]}
+           chown -R www-data:www-data #{deploy[:environment_variables][:host_code_path]}/
          fi
         EOH
   end
