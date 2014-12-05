@@ -81,7 +81,7 @@ node[:deploy].each do |application, deploy|
     code <<-EOH
       if docker images | grep #{deploy[:application]}
       then
-        docker run #{dockerenvs} -m='2560m' -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:application]} --cpuset="0-7"
+        docker run #{dockerenvs} --memory="2560m" --cpuset="0-7" -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:application]}
       fi
     EOH
   end
