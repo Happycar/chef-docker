@@ -32,6 +32,14 @@ node[:deploy].each do |application, deploy|
          EOH
        end
 
+     bash "allow tracing" do
+            user "root"
+            code <<-EOH
+             echo 0 > /proc/sys/kernel/yama/ptrace_scope
+             sysctl -p
+            EOH
+          end
+
 
    bash "create-path-to-mount-if-not-exist" do
       user "root"
