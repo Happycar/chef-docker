@@ -27,8 +27,8 @@ node[:deploy].each do |application, deploy|
    bash "give-rights-to-deploy" do
          user "root"
          code <<-EOH
-          if [ ! -d /var/www ]; then
-            mkdir /var/www
+          if [ ! -d /var/www/ ]; then
+            mkdir -p /var/www/
           fi
           chown www-data:www-data /var/www/
          EOH
