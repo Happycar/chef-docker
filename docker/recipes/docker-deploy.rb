@@ -28,6 +28,7 @@ node[:deploy].each do |application, deploy|
          user "root"
          code <<-EOH
           if [ ! -d /var/www/ ]; then
+            rm /var/www/
             mkdir -p /var/www/
           fi
           chown www-data:www-data /var/www/
