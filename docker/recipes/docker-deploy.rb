@@ -24,6 +24,16 @@ node[:deploy].each do |application, deploy|
     dockerenvs=dockerenvs+" -e "+key+"="+value
   end
 
+   bash "give-rights-to-deploy" do
+         user "root"
+         code <<-EOH
+          if [ ! -d /var/www ]; then
+            mkdir /var/www
+          fi
+          chown www-data:www-data /var/www/
+         EOH
+       end
+
      bash "allow tracing" do
             user "root"
             code <<-EOH
@@ -33,12 +43,18 @@ node[:deploy].each do |application, deploy|
           end
 
 
+   bash "create-path-to-mount-if-not-exist" do
+      user "root"
+      code <<-EOH
+       mkdir -p #{deploy[:environment_variables][:host_code_path]}
+      EOH
+    end
+
   bash "copy-code" do
         user "root"
         code <<-EOH
          if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
-           mkdir -p #{deploy[:environment_variables][:host_code_path]}
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/. #{deploy[:environment_variables][:host_code_path]}
            chown -R www-data:www-data #{deploy[:environment_variables][:host_code_path]}/
