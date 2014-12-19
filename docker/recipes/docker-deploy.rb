@@ -38,7 +38,7 @@ node[:deploy].each do |application, deploy|
         code <<-EOH
          if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
          then
-           rm -rf /var/www/
+           rm -rf /var/www/*
            mkdir -p /var/www/
            chown www-data:www-data /var/www/
            mkdir -p #{deploy[:environment_variables][:host_code_path]}
