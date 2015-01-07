@@ -72,7 +72,7 @@ node[:deploy].each do |application, deploy|
         if [ ! -n docker ps -a -q ]
         then
             docker restart --time=10 $(sudo docker ps -a -q)
-        end
+        fi
       else
         echo "Docker being deployed - cleanup images and rebuild"
         for i in $(find #{deploy[:deploy_to]}/current -name 'Dockerfile' );
