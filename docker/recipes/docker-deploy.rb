@@ -59,7 +59,6 @@ node[:deploy].each do |application, deploy|
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/. #{deploy[:environment_variables][:host_code_path]}
            chown -R www-data:www-data #{deploy[:environment_variables][:host_code_path]}/
-           docker restart #{deploy[:application]}
          fi
         EOH
   end
@@ -69,11 +68,8 @@ node[:deploy].each do |application, deploy|
     code <<-EOH
       if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
       then
-        echo "Code being deployed - just stop the container"
-        docker stop #{deploy[:application]}
-        sleep 3
-        docker rm #{deploy[:application]}
-        sleep 3
+        echo "Code being deployed - just restart the container"
+        docker restart $(sudo docker ps -a -q)
       else
         echo "Docker being deployed - cleanup images and rebuild"
         for i in $(find #{deploy[:deploy_to]}/current -name 'Dockerfile' );
