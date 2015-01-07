@@ -65,7 +65,6 @@ node[:deploy].each do |application, deploy|
 
   bash "docker-cleanup" do
     user "root"
-    cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
       if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
       then
@@ -76,7 +75,7 @@ node[:deploy].each do |application, deploy|
         sleep 3
       else
         echo "Docker being deployed - cleanup images and rebuild"
-        for i in $(find . -name 'Dockerfile' );
+        for i in $(find #{deploy[:deploy_to]}/current" -name 'Dockerfile' );
         do
             docker stop $(sudo docker ps -a -q)
             docker rm $(sudo docker ps -a -q)
