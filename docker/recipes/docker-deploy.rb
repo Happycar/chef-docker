@@ -69,7 +69,10 @@ node[:deploy].each do |application, deploy|
       if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
       then
         echo "Code being deployed - just restart the container"
-        docker restart --time=10 $(sudo docker ps -a -q)
+        if [sudo docker ps -a -q]
+        then
+            docker restart --time=10 $(sudo docker ps -a -q)
+        end
       else
         echo "Docker being deployed - cleanup images and rebuild"
         for i in $(find #{deploy[:deploy_to]}/current -name 'Dockerfile' );
