@@ -69,7 +69,7 @@ node[:deploy].each do |application, deploy|
       if [ ! -f  #{deploy[:deploy_to]}/current/Dockerfile ]
       then
         echo "Code being deployed - just restart the container"
-        docker restart $(sudo docker ps -a -q)
+        docker restart -t $(sudo docker ps -a -q)
       else
         echo "Docker being deployed - cleanup images and rebuild"
         for i in $(find #{deploy[:deploy_to]}/current -name 'Dockerfile' );
@@ -89,6 +89,8 @@ node[:deploy].each do |application, deploy|
     code <<-EOH
       if docker images | grep #{deploy[:application]}
       then
+        docker stop $(sudo docker ps -a -q)
+        docker rm $(sudo docker ps -a -q)
         docker run #{dockerenvs} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port1]}:#{deploy[:environment_variables][:container_port1]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:application]}
       fi
     EOH
