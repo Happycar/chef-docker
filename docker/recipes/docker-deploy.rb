@@ -59,6 +59,7 @@ node[:deploy].each do |application, deploy|
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/. #{deploy[:environment_variables][:host_code_path]}
            chown -R www-data:www-data #{deploy[:environment_variables][:host_code_path]}/
+           docker restart #{deploy[:application]}
          fi
         EOH
   end
