@@ -83,7 +83,7 @@ node[:deploy].each do |application, deploy|
             docker rm $(sudo docker ps -a -q)
             docker rmi $(sudo docker images -q)
             docker login -e #{deploy[:environment_variables][:email]} -p #{deploy[:environment_variables][:password]} -u #{deploy[:environment_variables][:username]}
-            docker pull #{deploy[:application]}
+            docker pull #{deploy[:environment_variables][:repo_name]}
         done
       fi
     EOH
