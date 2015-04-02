@@ -93,7 +93,7 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      if docker images | grep #{deploy[:application]}
+      if docker images | grep #{deploy[:environment_variables][:repo_name]}
       then
         docker stop $(sudo docker ps -a -q)
         docker rm $(sudo docker ps -a -q)
