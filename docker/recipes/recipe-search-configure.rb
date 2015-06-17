@@ -33,7 +33,7 @@ all_instances.each do |instance|
   all_hostgroups = all_hostgroups.merge(node_hostgroups)
 end
 
-template '/etc/nagios/conf.d/hostgroups.cfg' do
+template '/usr/local/nagios/etc/objects/hostgroups.cfg' do
   source 'hostgroups.cfg.erb'
   owner 'nagios'
   group 'nagios'
@@ -44,7 +44,7 @@ template '/etc/nagios/conf.d/hostgroups.cfg' do
   backup 0
 end
 
-template "/etc/nagios/conf.d/hosts.cfg" do
+template "/usr/local/nagios/etc/objects/hosts.cfg" do
   source 'hosts.cfg.erb'
   owner 'nagios'
   group 'nagios'
