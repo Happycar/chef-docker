@@ -41,7 +41,6 @@ template '/etc/nagios/conf.d/hostgroups.cfg' do
   variables(
     :hostgroups => all_hostgroups
   )
-  notifies :reload, '/etc/init.d/nagios'
   backup 0
 end
 
@@ -53,6 +52,9 @@ template "/etc/nagios/conf.d/hosts.cfg" do
   variables(
     :hosts => all_hosts
   )
-  notifies :reload, '/etc/init.d/nagios'
   backup 0
+end
+
+execute 'nagios reload' do
+  command '/etc/init.d/nagios reload'
 end
