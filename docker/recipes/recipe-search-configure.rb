@@ -33,9 +33,6 @@ all_instances.each do |instance|
   all_hostgroups = all_hostgroups.merge(node_hostgroups)
 end
 
-print all_hosts
-print all_hostgroups
-
 template '/usr/local/nagios/etc/objects/hostgroups.cfg' do
   source 'hostgroups.cfg.erb'
   owner 'nagios'
