@@ -6,7 +6,7 @@
 <% print host -%>
 <% print host[:hostgroups] -%>
 define host {
-  address <%= name %>
+  address <%= host[:private_ip] %>
   host_name <%= name %>
   hostgroups all,<%= host[:hostgroups].keys.sort.join(',') %>
   max_check_attempts 5
