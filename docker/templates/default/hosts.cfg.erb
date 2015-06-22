@@ -16,5 +16,7 @@ define host {
   notification_options d,u,r
   contact_groups admins
   contacts nagiosadmin
+   check_interval  2
+    retry_interval  1
 }
 <% end -%>
