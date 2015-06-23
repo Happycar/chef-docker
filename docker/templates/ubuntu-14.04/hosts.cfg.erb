@@ -11,6 +11,7 @@ define host {
   hostgroups all,<%= host[:hostgroups].keys.sort.join(',') %>
   max_check_attempts 5
   check_period 24x7
+  check_command check-host-alive
   check_interval  2
   retry_interval  1
   notification_interval	30
