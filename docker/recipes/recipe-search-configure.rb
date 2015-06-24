@@ -58,3 +58,22 @@ end
 execute 'nagios reload' do
   command '/etc/init.d/nagios reload'
 end
+
+system_sudoer = case node[:platform]
+                when 'debian'
+                  'admin','nagios'
+                when 'ubuntu'
+                  'ubuntu','nagios'
+                when 'redhat','centos','fedora','amazon'
+                   'ec2-user','nagios'
+                end
+
+template '/etc/sudoers' do
+  backup false
+  source 'sudoers.erb'
+  owner 'root'
+  group 'root'
+  mode 0440
+  variables :sudoers => node[:sudoers], :system_sudoer => system_sudoer
+  only_if { infrastructure_class? 'ec2' }
+end
