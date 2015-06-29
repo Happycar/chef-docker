@@ -19,6 +19,6 @@ define host {
   contacts nagiosadmin
   check_interval  2
   retry_interval  1
-  _id  <%= host[:private_ip].split('.').last(1) %>
+    _id  <%= host[:private_ip].split('.').last(1)[0].to_i %>
 }
 <% end -%>
