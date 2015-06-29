@@ -17,8 +17,8 @@ define host {
   notification_options d,u,r
   contact_groups admins
   contacts nagiosadmin
-   check_interval  2
-    retry_interval  1
+  check_interval  10
+  retry_interval  5
   _id  <%= host[:private_ip].split('.').last(1)[0].to_i %>
 }
 <% end -%>
