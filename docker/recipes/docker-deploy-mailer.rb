@@ -98,7 +98,7 @@ node[:deploy].each do |application, deploy|
         crontab -r
         docker stop $(sudo docker ps -a -q)
         docker rm $(sudo docker ps -a -q)
-        docker run #{dockerenvs} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port1]}:#{deploy[:environment_variables][:container_port1]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:environment_variables][:repo_name]}
+        docker run #{dockerenvs} --log-driver=syslog -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port1]}:#{deploy[:environment_variables][:container_port1]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:environment_variables][:repo_name]}
         crontab -l | { cat; echo "*/2 * * * * docker run -v '/var/www/code':/worker happycarde/worker-mailer php /worker/workers/HcMailer/cron_startFetchers.php"; } | crontab -
         crontab -l | { cat; echo "*/55 * * * * sudo docker ps -a | grep Exit | cut -d ' ' -f 1 | xargs sudo docker rm"; } | crontab -
       fi
