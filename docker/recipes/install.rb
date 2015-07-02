@@ -1,12 +1,10 @@
-case node[:platform]
-when "ubuntu","debian"
-  package "docker.io" do
-    action :install
-  end
-when 'centos','redhat','fedora','amazon'
-  package "docker" do
-    action :install
-  end
+Chef::Log.info(" === :: Docker BUILD :: === ")
+bash "docker-install" do
+user "root"
+#cwd "#{deploy[:deploy_to]}/current"
+code <<-EOH
+  wget -qO- https://get.docker.com/ | sh
+EOH
 end
 
 service "docker" do
