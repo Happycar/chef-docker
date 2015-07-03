@@ -1,7 +1,7 @@
 include_recipe 'deploy'
 
 node[:deploy].each do |application, deploy|
-
+  
   if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
     Chef::Log.debug("Skipping deploy::docker application #{application} as it is not deployed to this layer")
     next
@@ -82,8 +82,7 @@ node[:deploy].each do |application, deploy|
             docker stop $(sudo docker ps -a -q)
             docker rm $(sudo docker ps -a -q)
             docker rmi $(sudo docker images -q)
-            docker login -e #{deploy[:environment_variables][:email]} -p #{deploy[:environment_variables][:password]} -u #{deploy[:environment_variables][:username]}
-            docker pull #{deploy[:environment_variables][:repo_name]}
+            docker build -t=#{deploy[:application]} . > #{deploy[:application]}-docker.out
         done
       fi
     EOH
@@ -93,11 +92,11 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd "#{deploy[:deploy_to]}/current"
     code <<-EOH
-      if docker images | grep #{deploy[:environment_variables][:repo_name]}
+      if docker images | grep #{deploy[:application]}
       then
         docker stop $(sudo docker ps -a -q)
         docker rm $(sudo docker ps -a -q)
-        docker run #{dockerenvs} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port1]}:#{deploy[:environment_variables][:container_port1]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:environment_variables][:repo_name]}
+        docker run #{dockerenvs} --log-driver=syslog -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port1]}:#{deploy[:environment_variables][:container_port1]} --name #{deploy[:application]} -v '#{deploy[:environment_variables][:host_code_path]}':#{deploy[:environment_variables][:docker_mount_path]} -d #{deploy[:application]}
       fi
     EOH
   end
