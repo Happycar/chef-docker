@@ -77,6 +77,9 @@ node[:deploy].each do |application, deploy|
         fi
       else
         echo "Docker being deployed - cleanup images and rebuild"
+        export MIRROR_SOURCE=https://registry.hub.docker.com
+        export MIRROR_SOURCE_INDEX=https://registry.hub.docker.com
+        
         for i in $(find . -name 'Dockerfile' );
         do
             docker stop $(sudo docker ps -a -q)
