@@ -7,5 +7,7 @@ bash "run-config" do
     code <<-EOH
         chmod 777 /configure-linux.sh
         /configure-linux.sh -a #{node[:loggly][:subdomain]} -t #{node[:loggly][:token]} -p #{node[:loggly][:password]} -u #{node[:loggly][:username]}
+        printf '$ModLoad imudp \n' >> /etc/rsyslog.conf
+        printf '$UDPServerRun 514 \n' >> /etc/rsyslog.conf
     EOH
   end
