@@ -10,17 +10,12 @@ bash "run-config" do
     EOH
   end
 
-bash "enable-udp" do
-  user "root"
-  code <<-EOS
-  echo "$ModLoad imudp" >> /etc/rsyslog.conf
-  EOS
+
+
+execute 'enable-udp' do
+  command 'printf "$ModLoad imudp \n" >> /etc/rsyslog.conf'
 end
 
-
-bash "enable-port" do
-  user "root"
-  code <<-EOS
-  echo "$UDPServerRun 514" >> /etc/rsyslog.conf
-  EOS
+execute 'enable-post' do
+  command 'printf "$UDPServerRun 514 \n" >> /etc/rsyslog.conf'
 end
