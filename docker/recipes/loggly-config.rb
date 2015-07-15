@@ -13,9 +13,9 @@ bash "run-config" do
 
 
 execute 'enable-udp' do
-  command 'printf "$ModLoad imudp \n" >> /etc/rsyslog.conf'
+  command "printf '$ModLoad imudp \n' >> /etc/rsyslog.conf"
 end
 
 execute 'enable-post' do
-  command 'printf "$UDPServerRun 514 \n" >> /etc/rsyslog.conf'
+  command "printf '$UDPServerRun 514 \n' >> /etc/rsyslog.conf"
 end
