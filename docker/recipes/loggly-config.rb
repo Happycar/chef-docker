@@ -10,10 +10,16 @@ bash "run-config" do
     EOH
   end
 
-
+execute 'remove-udp' do
+  command "sed -i '/$ModLoad imudp/d' /etc/rsyslog.conf"
+end
 
 execute 'enable-udp' do
   command "printf '$ModLoad imudp \n' >> /etc/rsyslog.conf"
+end
+
+execute 'remove-post' do
+  command "printf 'sed -i '/$UDPServerRun 514/d' /etc/rsyslog.conf
 end
 
 execute 'enable-post' do
