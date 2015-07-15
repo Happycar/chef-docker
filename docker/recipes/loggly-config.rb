@@ -19,7 +19,7 @@ execute 'enable-udp' do
 end
 
 execute 'remove-post' do
-  command "printf 'sed -i '/$UDPServerRun 514/d' /etc/rsyslog.conf
+  command "sed -i '/$UDPServerRun 514/d' /etc/rsyslog.conf"
 end
 
 execute 'enable-post' do
