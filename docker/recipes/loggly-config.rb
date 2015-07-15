@@ -25,3 +25,7 @@ end
 execute 'enable-post' do
   command "printf '$UDPServerRun 514 \n' >> /etc/rsyslog.conf"
 end
+
+execute 'restart-syslog' do
+  command "service rsyslog restart"
+end
