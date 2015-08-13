@@ -65,7 +65,6 @@ node[:deploy].each do |application, deploy|
 
   bash "docker-cleanup" do
     user "root"
-    cwd "#{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_folder]}"
     code <<-EOH
       if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_folder]}/Dockerfile ]
       then
