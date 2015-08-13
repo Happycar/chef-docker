@@ -54,7 +54,7 @@ node[:deploy].each do |application, deploy|
   bash "copy-code" do
         user "root"
         code <<-EOH
-         if [ ! -f  #{deploy[:deploy_to]}/current/Docker ]
+         if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_path]}/Dockerfile ]
          then
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/. #{deploy[:environment_variables][:host_code_path]}
@@ -65,9 +65,9 @@ node[:deploy].each do |application, deploy|
 
   bash "docker-cleanup" do
     user "root"
-    cwd "#{deploy[:deploy_to]}/current"
+    cwd "#{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_path]}"
     code <<-EOH
-      if [  -f  #{deploy[:deploy_to]}/current/Docker ]
+      if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_path]}/Dockerfile ]
       then
         echo "Code being deployed - just restart the container"
         STR=$(sudo docker ps -a -q)
@@ -77,7 +77,6 @@ node[:deploy].each do |application, deploy|
         fi
       else
         echo "Docker being deployed - cleanup images and rebuild"
-        find ./#{deploy[:environment_variables][:docker_folder]}/* -type f -print0 | xargs -0 -J % mv % .
         for i in $(find . -name 'Dockerfile' );
         do
             docker stop $(sudo docker ps -a -q)
