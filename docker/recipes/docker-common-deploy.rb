@@ -54,7 +54,7 @@ node[:deploy].each do |application, deploy|
   bash "copy-code" do
         user "root"
         code <<-EOH
-         if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_path]}/Dockerfile ]
+         if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_folder]}/Dockerfile ]
          then
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/. #{deploy[:environment_variables][:host_code_path]}
@@ -65,9 +65,9 @@ node[:deploy].each do |application, deploy|
 
   bash "docker-cleanup" do
     user "root"
-    cwd "#{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_path]}"
+    cwd "#{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_folder]}"
     code <<-EOH
-      if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_path]}/Dockerfile ]
+      if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_folder]}/Dockerfile ]
       then
         echo "Code being deployed - just restart the container"
         STR=$(sudo docker ps -a -q)
