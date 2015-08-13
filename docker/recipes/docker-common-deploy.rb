@@ -54,7 +54,7 @@ node[:deploy].each do |application, deploy|
   bash "copy-code" do
         user "root"
         code <<-EOH
-         if [ ! -f  #{deploy[:deploy_to]}/current/Docker ]
+         if [  -f  #{deploy[:deploy_to]}/current/Docker ]
          then
            rm -rf #{deploy[:environment_variables][:host_code_path]}/*
            cp -r #{deploy[:deploy_to]}/current/. #{deploy[:environment_variables][:host_code_path]}
