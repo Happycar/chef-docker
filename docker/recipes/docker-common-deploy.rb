@@ -66,7 +66,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-cleanup" do
     user "root"
     code <<-EOH
-      if [ ! -f  #{deploy[:deploy_to]}/current/#{deploy[:environment_variables][:docker_folder]}/Dockerfile ]
+      if [ ! -f  #{deploy[:deploy_to]}/current/Docker ]
       then
         echo "Code being deployed - just restart the container"
         STR=$(sudo docker ps -a -q)
