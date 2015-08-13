@@ -77,7 +77,7 @@ node[:deploy].each do |application, deploy|
         fi
       else
         echo "Docker being deployed - cleanup images and rebuild"
-        cd #{deploy[:environment_variables][:docker_folder]}
+        find ./#{deploy[:environment_variables][:docker_folder]}/* -type f -print0 | xargs -0 -J % mv % .
         for i in $(find . -name 'Dockerfile' );
         do
             docker stop $(sudo docker ps -a -q)
