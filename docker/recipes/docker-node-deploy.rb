@@ -1,5 +1,4 @@
 include_recipe 'deploy'
-include_recipe 'docker'
 
 Chef::Log.info("Entering docker-image-deploy")
 
