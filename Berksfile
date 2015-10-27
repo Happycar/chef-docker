@@ -1,3 +1,3 @@
 source "https://supermarket.getchef.com"
 
-cookbook 'docker', '~> 0.36.0'
+cookbook 'docker', '~> 2.1.22'
