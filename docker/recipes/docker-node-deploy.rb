@@ -43,20 +43,24 @@ node[:deploy].each do |application, deploy|
     EOH
   end
 
-  if deploy[:environment_variables][:registry_username]
-    Chef::Log.info("REGISTRY: Login as #{deploy[:environment_variables][:registry_username]} to #{deploy[:environment_variables][:registry_url]}")
-    docker_registry "#{deploy[:environment_variables][:registry_url]}" do
-      username deploy[:environment_variables][:registry_username]
-      password deploy[:environment_variables][:registry_password]
-      email deploy[:environment_variables][:registry_username]
-    end
+  Chef::Log.info('docker-login start')
+  # Chef::Log.info("REGISTRY: Login as #{deploy[:environment_variables][:registry_username]} to #{deploy[:environment_variables][:registry_url]}")
+  bash "docker-login" do
+    user "root"
+    code <<-EOH
+      docker login -u #{deploy[:environment_variables][:registry_username]} -p #{deploy[:environment_variables][:registry_password]} -e #{deploy[:environment_variables][:registry_email]}
+    EOH
   end
+  Chef::Log.info('docker-login stop')
 
-  # Pull tagged image
-  Chef::Log.info("IMAGE: Pulling #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}")
-  docker_image "#{deploy[:environment_variables][:registry_image]}" do
-    tag deploy[:environment_variables][:registry_tag]
+  Chef::Log.info('docker-pull start')
+  bash "docker-pull" do
+    user "root"
+    code <<-EOH
+      docker pull #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
+    EOH
   end
+  Chef::Log.info('docker-pull stop')
 
   dockerenvs = " "
   deploy[:environment_variables].each do |key, value|
