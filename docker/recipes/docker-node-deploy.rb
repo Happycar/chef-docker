@@ -71,7 +71,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-run" do
     user "root"
     code <<-EOH
-      docker run #{dockerenvs} -e DOCKER_HOST_IP=#{node[:opsworks][:instance][:private_ip]} -e DOCKER_HOST_NAME=#{node[:opsworks][:instance][:hostname]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -d #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
+      docker run #{dockerenvs} -e NODE_ENV=#{deploy[:environment_variables][:node_env]} DOCKER_HOST_IP=#{node[:opsworks][:instance][:private_ip]} -e DOCKER_HOST_NAME=#{node[:opsworks][:instance][:hostname]} -p #{node[:opsworks][:instance][:private_ip]}:#{deploy[:environment_variables][:service_port]}:#{deploy[:environment_variables][:container_port]} --name #{deploy[:application]} -d #{deploy[:environment_variables][:registry_image]}:#{deploy[:environment_variables][:registry_tag]}
     EOH
   end
   Chef::Log.info('docker-run stop')
