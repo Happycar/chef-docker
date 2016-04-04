@@ -20,6 +20,9 @@ node[:deploy].each do |application, deploy|
 
 
   dockerenvs = " "
+  node[:environment_variables].each do |key, value|
+    dockerenvs=dockerenvs+" -e "+key+"="+value
+  end
   deploy[:environment_variables].each do |key, value|
     dockerenvs=dockerenvs+" -e "+key+"="+value
   end
