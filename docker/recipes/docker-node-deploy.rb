@@ -62,6 +62,9 @@ node[:deploy].each do |application, deploy|
   Chef::Log.info('docker-pull stop')
 
   dockerenvs = " "
+  node[:environment_variables].each do |key, value|
+    dockerenvs=dockerenvs+" -e "+key+"="+value
+  end
   deploy[:environment_variables].each do |key, value|
     dockerenvs=dockerenvs+" -e "+key+"="+value unless key == "registry_password"
   end
