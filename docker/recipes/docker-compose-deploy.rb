@@ -14,6 +14,16 @@ node[:deploy].each do |application, deploy|
     deploy_data deploy
     app application
   end
+ 
+  Chef::Log.info('docker-login start')
+  bash "docker-login" do
+    user "root"
+    code <<-EOH
+      docker login -u #{deploy[:environment_variables][:DOCKER_HUB_USER]} -p #{deploy[:environment_variables][:DOCKER_HUB_PASSWORD]}
+    EOH
+  end
+  Chef::Log.info('docker-login stop')
+
 
   Chef::Log.info('Docker compose pull start')
   bash "docker-compose pull" do
