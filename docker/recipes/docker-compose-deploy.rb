@@ -24,15 +24,6 @@ node[:deploy].each do |application, deploy|
   end
   Chef::Log.info('docker-login stop')
 
-
-  Chef::Log.info('Docker compose pull start')
-  bash "docker-compose pull" do
-    user "root"
-    code <<-EOH
-      docker-compose pull
-    EOH
-  end
-
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
     user "root"
