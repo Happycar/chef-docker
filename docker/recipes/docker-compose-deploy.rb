@@ -26,18 +26,22 @@ node[:deploy].each do |application, deploy|
     Chef::Log.info('docker-login stop')
 
     Chef::Log.info('docker-compose-run start')
+
+    composeEnv = deploy[:environment_variables].clone
+    composeEnv[:PRIVATE_IP] = node[:opsworks][:instance][:private_ip]
+
     bash "docker-compose-run" do
-      user "root"
-      environment deploy[:environment_variables]
+      user deploy[:user]
+      environment composeEnv
+      cwd deploy[:deploy_to] + "/current/"
       code <<-EOH
-        export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
-        docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml pull
-        docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
-        docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
+        docker-compose pull
+        docker-compose down
+        docker-compose up -d
       EOH
     end
   else
-      Chef::Log.info('test')
+      Chef::Log.info("Cant't deploy, ENV is empty")
   end
   
 
