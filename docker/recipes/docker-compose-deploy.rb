@@ -28,6 +28,7 @@ node[:deploy].each do |application, deploy|
     Chef::Log.info('docker-compose-run start')
     bash "docker-compose-run" do
       user "root"
+      environment deploy[:environment_variables]
       code <<-EOH
         export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
         docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml pull
