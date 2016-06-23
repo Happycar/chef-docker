@@ -20,6 +20,9 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
+  Chef::log.info("env vars set?: " + deploy[:environment_variables].nil?)
+  Chef::log.info("env vars set?: " + deploy[:environment_variables].join(','))
+  
   unless deploy[:environment_variables].nil? 
     Chef::Log.info('docker-login start')
     bash "docker-login" do
