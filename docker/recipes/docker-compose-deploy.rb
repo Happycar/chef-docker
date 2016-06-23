@@ -29,8 +29,8 @@ node[:deploy].each do |application, deploy|
     user "root"
     code <<-EOH
       export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
-      docker-compose -f #{deploy[:deploy_to]}/docker-compose.yml down
-      docker-compose -f #{deploy[:deploy_to]}/docker-compose.yml up -d
+      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
+      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
     EOH
   end
 
