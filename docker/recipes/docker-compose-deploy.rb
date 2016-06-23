@@ -14,7 +14,7 @@ node[:deploy].each do |application, deploy|
     deploy_data deploy
     app application
   end
- 
+
   Chef::Log.info('docker-login start')
   bash "docker-login" do
     user "root"
@@ -29,6 +29,7 @@ node[:deploy].each do |application, deploy|
     user "root"
     code <<-EOH
       export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
+      printenv
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
     EOH
