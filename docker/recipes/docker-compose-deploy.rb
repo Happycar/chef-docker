@@ -28,6 +28,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-run" do
     user "root"
     code <<-EOH
+      echo "start composer"
       export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
       printenv
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
