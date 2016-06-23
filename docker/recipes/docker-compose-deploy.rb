@@ -20,7 +20,7 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  if (deploy[:environment_variables]) 
+  unless deploy[:environment_variables].nil? 
     Chef::Log.info('docker-login start')
     bash "docker-login" do
       user "root"
