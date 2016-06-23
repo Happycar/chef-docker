@@ -35,6 +35,8 @@ node[:deploy].each do |application, deploy|
         docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
       EOH
     end
+  else
+      Chef::Log.info('test')
   end
   
 
