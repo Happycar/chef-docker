@@ -40,9 +40,9 @@ node[:deploy].each do |application, deploy|
 
     bash "docker-compose stop previous" do
       user "root"
-      cwd deploy[:deploy_to]
+      cwd deploy[:deploy_to] + "/releases/"
       code <<-EOH
-        cd $(ls | sort -r | head -2 | tail -1) && pwd && docker-compose down
+        cd $(ls | sort -r | head -2 | tail -1) && docker-compose down
       EOH
     end
 
