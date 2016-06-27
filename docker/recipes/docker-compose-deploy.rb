@@ -42,7 +42,7 @@ node[:deploy].each do |application, deploy|
       user "root"
       cwd deploy[:deploy_to]
       code <<-EOH
-        cd $(ls | sort -r | head -2 | tail -1) && docker-compose down
+        cd $(ls | sort -r | head -2 | tail -1) && pwd && docker-compose down
       EOH
     end
 
