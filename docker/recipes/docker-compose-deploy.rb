@@ -31,7 +31,7 @@ node[:deploy].each do |application, deploy|
     composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
 
     bash "docker-compose-run" do
-      user deploy[:user]
+      user "root"
       environment composeEnv
       cwd deploy[:deploy_to] + "/current/"
       code <<-EOH
