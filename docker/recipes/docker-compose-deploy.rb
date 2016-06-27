@@ -30,16 +30,32 @@ node[:deploy].each do |application, deploy|
     composeEnv = deploy[:environment_variables].to_hash
     composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
 
-    bash "docker-compose-run" do
+    bash "docker-compose pull" do
+      user "root"
+      cwd deploy[:deploy_to] + "/current/"
+      code <<-EOH
+        docker-compose pull
+      EOH
+    end
+
+    bash "docker-compose stop previous" do
+      user "root"
+      cwd deploy[:deploy_to]
+      code <<-EOH
+        cd $(ls | sort -r | head -2 | tail -1)
+        docker-compose down
+      EOH
+    end
+
+    bash "docker-compose stop previous" do
       user "root"
       environment composeEnv
       cwd deploy[:deploy_to] + "/current/"
       code <<-EOH
-        docker-compose pull
-        docker-compose down
         docker-compose up -d
       EOH
     end
+
   else
       Chef::Log.info("Cant't deploy, ENV is empty")
   end
