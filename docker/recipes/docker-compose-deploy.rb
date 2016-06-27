@@ -27,8 +27,8 @@ node[:deploy].each do |application, deploy|
 
     Chef::Log.info('docker-compose-run start')
 
-    composeEnv = deploy[:environment_variables].clone
-    composeEnv.default['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
+    composeEnv = deploy[:environment_variables].to_hash
+    composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
 
     bash "docker-compose-run" do
       user deploy[:user]
