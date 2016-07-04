@@ -1,4 +1,4 @@
-unless  node[:docker_registry].nil? do
+unless node[:docker_registry].nil?
 
   registry = node[:docker_registry][:type]
   accessToken = Chef::JSONCompat.to_json(node[:docker_registry][:auth_data])
