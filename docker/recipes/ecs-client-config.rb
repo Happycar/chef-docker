@@ -1,7 +1,9 @@
 unless node[:docker_registry].nil?
 
   registry = node[:docker_registry][:type]
-  accessToken = Chef::JSONCompat.to_json(node[:docker_registry][:auth_data])
+  accessData = Chef::JSONCompat.to_json(node[:docker_registry][:auth_data])
+
+  Chef::Log.info("Saving access config to ecs config: #{accessData}")
 
   unless File.readlines("/etc/ecs/ecs.config").grep(/ECS_ENGINE_AUTH_TYPE/).size > 0
 
@@ -9,7 +11,7 @@ unless node[:docker_registry].nil?
       user "root" 
       code <<-EOH
         echo "ECS_ENGINE_AUTH_TYPE=#{registry}" >> /etc/ecs/ecs.config
-        echo "ECS_ENGINE_AUTH_DATA=#{accessToken}" >> /etc/ecs/ecs.config
+        echo "ECS_ENGINE_AUTH_DATA=#{accessData}" >> /etc/ecs/ecs.config
       EOH
     end
 
@@ -19,7 +21,7 @@ unless node[:docker_registry].nil?
       user "root"
       code <<-EOH
         sed -i -e 's/ECS_ENGINE_AUTH_TYPE=.*/ECS_ENGINE_AUTH_TYPE=#{registry}/' /etc/ecs/ecs.config
-        sed -i -e 's/ECS_ENGINE_AUTH_TYPE=.*/ECS_ENGINE_AUTH_TYPE=#{accessToken}/' /etc/ecs/ecs.config
+        sed -i -e 's/ECS_ENGINE_AUTH_TYPE=.*/ECS_ENGINE_AUTH_TYPE=#{accessData}/' /etc/ecs/ecs.config
       EOH
     end
 
