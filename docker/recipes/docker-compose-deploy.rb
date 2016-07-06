@@ -16,15 +16,6 @@ node[:deploy].each do |application, deploy|
   end
 
   unless deploy[:environment_variables].nil? 
-    Chef::Log.info('docker-login start')
-    bash "docker-login" do
-      user "root"
-      code <<-EOH
-        docker login -u #{deploy[:environment_variables][:DOCKER_HUB_USER]} -p #{deploy[:environment_variables][:DOCKER_HUB_PASSWORD]}
-      EOH
-    end
-    Chef::Log.info('docker-login stop')
-
     Chef::Log.info('docker-compose-run start')
 
     composeEnv = deploy[:environment_variables].to_hash
@@ -59,6 +50,5 @@ node[:deploy].each do |application, deploy|
       Chef::Log.info("Cant't deploy, ENV is empty")
   end
   
-
 end
 Chef::Log.info("Exiting docker-compose-deploy")
