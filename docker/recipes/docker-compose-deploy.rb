@@ -15,7 +15,8 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  unless deploy[:environment_variables].nil? and File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
+  unless deploy[:environment_variables].nil? 
+    if File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
       composeEnv = deploy[:environment_variables].to_hash
@@ -45,6 +46,9 @@ node[:deploy].each do |application, deploy|
           docker-compose up -d
         EOH
       end
+    else
+      Chef::Log.info("Cant't deploy, docker-compose file does not exists")
+    end
   else
       Chef::Log.info("Cant't deploy, ENV is empty or docker-compose file does not exists")
   end
