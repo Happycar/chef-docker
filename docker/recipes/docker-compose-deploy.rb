@@ -16,7 +16,7 @@ node[:deploy].each do |application, deploy|
   end
 
   unless deploy[:environment_variables].nil? 
-    if File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
+    if ::File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
       composeEnv = deploy[:environment_variables].to_hash
