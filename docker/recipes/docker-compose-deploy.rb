@@ -32,7 +32,7 @@ node[:deploy].each do |application, deploy|
     dockerenvs=dockerenvs+key+"="+value+"\n"
   end
   
-  env_file=".env"
+  env_file="#{deploy[:deploy_to]}/current/.env"
 
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
