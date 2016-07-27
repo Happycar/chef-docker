@@ -26,9 +26,11 @@ node[:deploy].each do |application, deploy|
   
   dockerenvs = ""
   node[:environment_variables].each do |key, value|
+    Chef::Log.info('node env key:' + key)
     dockerenvs=dockerenvs+key+"="+value+"\n"
   end
   deploy[:environment_variables].each do |key, value|
+    Chef::Log.info('deploy env key:' + key)
     dockerenvs=dockerenvs+key+"="+value+"\n"
   end
   
