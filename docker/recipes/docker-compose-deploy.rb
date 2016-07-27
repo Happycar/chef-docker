@@ -34,14 +34,18 @@ node[:deploy].each do |application, deploy|
     dockerenvs=dockerenvs+key+"="+value+"\n"
   end
   
+  Chef::Log.info('dockerenvs: ' + dockerenvs)
+  
   env_file="#{deploy[:deploy_to]}/current/.env"
+  
+  Chef::Log.info('env_file: ' + env_file)
 
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
     user "root"
     code <<-EOH
       rm -f #{env_file}
-      echo #{dockerenvs} >> #{env_file}
+      echo "#{dockerenvs}" >> #{env_file}
       
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
