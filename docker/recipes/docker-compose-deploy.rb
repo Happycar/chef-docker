@@ -26,19 +26,15 @@ node[:deploy].each do |application, deploy|
   
   dockerenvs = ""
   node[:environment_variables].each do |key, value|
-    Chef::Log.info('node env key:' + key)
+    Chef::Log.info('added node env key:' + key)
     dockerenvs=dockerenvs+key+"="+value+"\n"
   end
   deploy[:environment_variables].each do |key, value|
-    Chef::Log.info('deploy env key:' + key)
+    Chef::Log.info('added deploy env key:' + key)
     dockerenvs=dockerenvs+key+"="+value+"\n"
   end
   
-  Chef::Log.info('dockerenvs: ' + dockerenvs)
-  
   env_file="#{deploy[:deploy_to]}/current/.env"
-  
-  Chef::Log.info('env_file: ' + env_file)
 
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
