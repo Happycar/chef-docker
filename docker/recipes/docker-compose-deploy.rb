@@ -38,11 +38,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-run" do
     user "root"
     code <<-EOH
-      export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
-      printenv
-      
       rm -f #{env_file}
-      echo "PRIVATE_IP=#{private_ip}\n" >> #{env_file}
       echo #{dockerenvs} >> #{env_file}
       
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
