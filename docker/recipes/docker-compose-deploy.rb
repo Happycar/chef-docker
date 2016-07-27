@@ -23,6 +23,16 @@ node[:deploy].each do |application, deploy|
     EOH
   end
   Chef::Log.info('docker-login stop')
+  
+  dockerenvs = ""
+  node[:environment_variables].each do |key, value|
+    dockerenvs=dockerenvs+key+"="+value+"\n"
+  end
+  deploy[:environment_variables].each do |key, value|
+    dockerenvs=dockerenvs+key+"="+value+"\n"
+  end
+  
+  env_file=".env"
 
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
@@ -30,6 +40,11 @@ node[:deploy].each do |application, deploy|
     code <<-EOH
       export PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}
       printenv
+      
+      rm -f #{env_file}
+      echo "PRIVATE_IP=#{private_ip}\n" >> #{env_file}
+      echo #{dockerenvs} >> #{env_file}
+      
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
     EOH
