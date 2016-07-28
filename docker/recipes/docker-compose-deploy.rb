@@ -40,7 +40,8 @@ node[:deploy].each do |application, deploy|
   bash "docker-run" do
     user "root"
     code <<-EOH
-      rm -f #{env_file}
+      touch #{env_file}
+      chmod 700 #{env_file}
       echo "#{dockerenvs}" >> #{env_file}
       
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
