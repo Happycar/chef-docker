@@ -52,7 +52,7 @@ node[:deploy].each do |application, deploy|
       echo "PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}" >> #{env_file}
       
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
-      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
+      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d --remove-orphans 
     EOH
   end
 
