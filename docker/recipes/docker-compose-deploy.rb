@@ -43,6 +43,7 @@ node[:deploy].each do |application, deploy|
       touch #{env_file}
       chmod 700 #{env_file}
       echo "#{dockerenvs}" >> #{env_file}
+      echo "PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}" >> #{env_file}
       
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d
