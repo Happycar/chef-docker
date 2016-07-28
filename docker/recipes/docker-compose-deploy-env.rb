@@ -41,9 +41,15 @@ node[:deploy].each do |application, deploy|
   end
   
   env_file="#{deploy[:deploy_to]}/current/.env"
+  
+  deployEnv = deploy[:environment_variables].to_hash
+  nodeEnv = node[:environment_variables].to_hash
+  
+  composeEnv = deployEnv.merge(nodeEnv)
 
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
+    environment composeEnv
     user "root"
     code <<-EOH
       touch #{env_file}
