@@ -53,6 +53,7 @@ node[:deploy].each do |application, deploy|
       
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d --remove-orphans 
+      docker rmi $(sudo docker images -f "dangling=true" -q)
     EOH
   end
 
