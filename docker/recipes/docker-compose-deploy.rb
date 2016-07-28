@@ -3,6 +3,12 @@ include_recipe 'deploy'
 Chef::Log.info("Entering docker-compose-deploy")
 
 node[:deploy].each do |application, deploy|
+  
+  Chef::Log.info("Attempting do deploy application #{application}")
+  if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
+    Chef::Log.info("Skipping deployment of application #{application} because the apps layer environment does not match")
+    next
+  end
 
   opsworks_deploy_dir do
     user deploy[:user]
