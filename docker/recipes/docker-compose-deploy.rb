@@ -35,15 +35,6 @@ node[:deploy].each do |application, deploy|
         EOH
       end
 
-      # removes all unused images and exited containers
-      bash "docker cleanup" do
-        user "root"
-        code <<-EOH
-          docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
-          docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
-        EOH
-      end
-
       bash "docker-compose stop previous" do
         user "root"
         cwd deploy[:deploy_to] + "/releases/"
@@ -58,6 +49,15 @@ node[:deploy].each do |application, deploy|
         cwd deploy[:deploy_to] + "/current/"
         code <<-EOH
           docker-compose up -d
+        EOH
+      end
+
+      # removes all unused images and exited containers
+      bash "docker cleanup" do
+        user "root"
+        code <<-EOH
+          docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
+          docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
         EOH
       end
 
