@@ -52,12 +52,15 @@ node[:deploy].each do |application, deploy|
         EOH
       end
 
-      # removes all unused images and exited containers
+      # removes all unused images 
+      # exited containers 
+      # unused volumes 
       bash "docker cleanup" do
         user "root"
         code <<-EOH
           docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
           docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
+          docker volume ls -q -f dangling=true | xargs --no-run-if-empty docker volume rm
         EOH
       end
 
