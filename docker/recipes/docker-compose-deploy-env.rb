@@ -35,15 +35,15 @@ node[:deploy].each do |application, deploy|
   
   composeEnv = deployEnv.merge(nodeEnv)
   
-  deployVersion = "latest"
+  imageVersion = "latest"
   
-  unless node[:DEPLOY_VERSION].nil?
-    deployVersion = node[:DEPLOY_VERSION]
+  unless node[:IMAGE_VERSION].nil?
+    imageVersion = node[:IMAGE_VERSION]
   end
   
-  composeEnv["DEPLOY_VERSION"] = deployVersion
+  composeEnv["IMAGE_VERSION"] = imageVersion
   
-  Chef::Log.info('DEPLOY_VERSION set to ' + deployVersion)
+  Chef::Log.info('IMAGE_VERSION set to ' + imageVersion)
   
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
