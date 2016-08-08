@@ -34,7 +34,17 @@ node[:deploy].each do |application, deploy|
   nodeEnv = node[:environment_variables].to_hash
   
   composeEnv = deployEnv.merge(nodeEnv)
-
+  
+  deployVersion = "latest"
+  
+  unless node[:DEPLOY_VERSION].nil?
+    deployVersion = node[:DEPLOY_VERSION]
+  end
+  
+  composeEnv[:DEPLOY_VERSION] = deployVersion
+  
+  Chef::Log.info('DEPLOY_VERSION set to ' + deployVersion)
+  
   Chef::Log.info('docker-compose-run start')
   bash "docker-run" do
     environment composeEnv
