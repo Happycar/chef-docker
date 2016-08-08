@@ -30,18 +30,6 @@ node[:deploy].each do |application, deploy|
   end
   Chef::Log.info('docker-login stop')
   
-  dockerenvs = ""
-  node[:environment_variables].each do |key, value|
-    Chef::Log.info('added node env key:' + key)
-    dockerenvs=dockerenvs+key+"="+value+"\n"
-  end
-  deploy[:environment_variables].each do |key, value|
-    Chef::Log.info('added deploy env key:' + key)
-    dockerenvs=dockerenvs+key+"="+value+"\n"
-  end
-  
-  env_file="#{deploy[:deploy_to]}/current/.env"
-  
   deployEnv = deploy[:environment_variables].to_hash
   nodeEnv = node[:environment_variables].to_hash
   
@@ -52,11 +40,6 @@ node[:deploy].each do |application, deploy|
     environment composeEnv
     user "root"
     code <<-EOH
-      touch #{env_file}
-      chmod 700 #{env_file}
-      echo "#{dockerenvs}" >> #{env_file}
-      echo "PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}" >> #{env_file}
-      
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d --remove-orphans 
     EOH
