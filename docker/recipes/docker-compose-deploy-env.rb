@@ -41,7 +41,7 @@ node[:deploy].each do |application, deploy|
     deployVersion = node[:DEPLOY_VERSION]
   end
   
-  composeEnv[:DEPLOY_VERSION] = deployVersion
+  composeEnv["DEPLOY_VERSION"] = deployVersion
   
   Chef::Log.info('DEPLOY_VERSION set to ' + deployVersion)
   
