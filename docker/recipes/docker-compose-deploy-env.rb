@@ -45,15 +45,42 @@ node[:deploy].each do |application, deploy|
   
   Chef::Log.info('IMAGE_VERSION set to ' + imageVersion)
   
-  Chef::Log.info('docker-compose-run start')
-  bash "docker-run" do
-    environment composeEnv
+  bash "docker-compose pull" do
     user "root"
-    code <<-EOH
-      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
-      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d --remove-orphans 
+    cwd deploy[:deploy_to] + "/current/"
+      code <<-EOH
+        docker-compose pull
     EOH
   end
 
+  bash "docker-compose stop previous" do
+    user "root"
+    cwd deploy[:deploy_to] + "/releases/"
+    code <<-EOH
+      cd $(ls | sort -r | head -2 | tail -1) && docker-compose down
+    EOH
+  end
+  
+  bash "docker-run" do
+    environment composeEnv
+    user "root"
+    cwd deploy[:deploy_to] + "/current/"
+    code <<-EOH
+      docker-compose up -d --remove-orphans 
+    EOH
+  end
+  
+  # removes all unused images 
+  # exited containers 
+  # unused volumes 
+  bash "docker cleanup" do
+    user "root"
+    code <<-EOH
+      docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
+      docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
+      docker volume ls -q -f dangling=true | xargs --no-run-if-empty docker volume rm
+    EOH
+  end
 end
+
 Chef::Log.info("Exiting docker-compose-deploy")
