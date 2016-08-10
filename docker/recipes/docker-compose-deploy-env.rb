@@ -50,7 +50,6 @@ node[:deploy].each do |application, deploy|
     environment composeEnv
     user "root"
     code <<-EOH
-      printenv >> #{deploy[:deploy_to]}/current/.env
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
       docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d --remove-orphans 
     EOH
