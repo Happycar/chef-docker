@@ -45,13 +45,21 @@ node[:deploy].each do |application, deploy|
   
   Chef::Log.info('IMAGE_VERSION set to ' + imageVersion)
   
+  bash "docker-compose stop previous" do
+    environment composeEnv
+    user "root"
+    cwd deploy[:deploy_to] + "/releases/"
+    code <<-EOH
+      cd $(ls | sort -r | head -2 | tail -1) && docker-compose down
+    EOH
+  end
+  
   bash "docker-compose run" do
     environment composeEnv
     user "root"
     cwd deploy[:deploy_to] + "/current/"
     code <<-EOH
       docker-compose pull
-      docker-compose down
       docker-compose up -d --remove-orphans 
     EOH
   end
