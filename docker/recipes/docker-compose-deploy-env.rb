@@ -54,6 +54,7 @@ node[:deploy].each do |application, deploy|
   end
 
   bash "docker-compose stop previous" do
+    environment composeEnv
     user "root"
     cwd deploy[:deploy_to] + "/releases/"
     code <<-EOH
