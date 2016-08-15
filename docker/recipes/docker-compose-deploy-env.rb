@@ -30,37 +30,59 @@ node[:deploy].each do |application, deploy|
   end
   Chef::Log.info('docker-login stop')
   
-  dockerenvs = ""
-  node[:environment_variables].each do |key, value|
-    Chef::Log.info('added node env key:' + key)
-    dockerenvs=dockerenvs+key+"="+value+"\n"
-  end
-  deploy[:environment_variables].each do |key, value|
-    Chef::Log.info('added deploy env key:' + key)
-    dockerenvs=dockerenvs+key+"="+value+"\n"
-  end
-  
-  env_file="#{deploy[:deploy_to]}/current/.env"
-  
   deployEnv = deploy[:environment_variables].to_hash
   nodeEnv = node[:environment_variables].to_hash
   
   composeEnv = deployEnv.merge(nodeEnv)
-
-  Chef::Log.info('docker-compose-run start')
-  bash "docker-run" do
+  
+  imageVersion = "latest"
+  
+  unless node[:IMAGE_VERSION].nil?
+    imageVersion = node[:IMAGE_VERSION]
+  end
+  
+  composeEnv["IMAGE_VERSION"] = imageVersion
+  
+  Chef::Log.info('IMAGE_VERSION set to ' + imageVersion)
+  
+  bash "docker-compose pull" do
     environment composeEnv
     user "root"
+    cwd deploy[:deploy_to] + "/current/"
     code <<-EOH
-      touch #{env_file}
-      chmod 700 #{env_file}
-      echo "#{dockerenvs}" >> #{env_file}
-      echo "PRIVATE_IP=#{node[:opsworks][:instance][:private_ip]}" >> #{env_file}
-      
-      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml down
-      docker-compose -f #{deploy[:deploy_to]}/current/docker-compose.yml up -d --remove-orphans 
+      docker-compose pull
     EOH
   end
-
+  
+  bash "docker-compose stop previous" do
+    environment composeEnv
+    user "root"
+    cwd deploy[:deploy_to] + "/releases/"
+    code <<-EOH
+      cd $(ls | sort -r | head -2 | tail -1) && docker-compose down
+    EOH
+  end
+  
+  bash "docker-compose run" do
+    environment composeEnv
+    user "root"
+    cwd deploy[:deploy_to] + "/current/"
+    code <<-EOH
+      docker-compose up -d --remove-orphans 
+    EOH
+  end
+  
+  # removes all unused images 
+  # exited containers 
+  # unused volumes 
+  bash "docker cleanup" do
+    user "root"
+    code <<-EOH
+      docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
+      docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
+      docker volume ls -q -f dangling=true | xargs --no-run-if-empty docker volume rm
+    EOH
+  end
 end
+
 Chef::Log.info("Exiting docker-compose-deploy")
