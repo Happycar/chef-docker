@@ -7,6 +7,7 @@ end
 
 bash "docker-install" do
   user "root"
+  not_if { ::File.exists?("/usr/bin/docker") }
   code <<-EOH
     wget -qO- https://get.docker.com/ | sh > #{log} 2>&1
     export MIRROR_SOURCE=https://registry.hub.docker.com
