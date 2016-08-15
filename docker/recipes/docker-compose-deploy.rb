@@ -2,6 +2,8 @@ include_recipe 'deploy'
 
 Chef::Log.info("Entering docker-compose-deploy")
 
+Chef::Application.fatal!("docker-compose is not installed") unless ::File.exists?("/usr/local/bin/docker-compose")
+
 node[:deploy].each do |application, deploy|
 
   if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
