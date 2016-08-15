@@ -20,7 +20,7 @@ ruby_block "print-log" do
     block do
         print "\n"
         print "docker install log"
-        print File.open(results)
+        print File.open(log)
     end
 end
 
