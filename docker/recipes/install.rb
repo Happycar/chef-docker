@@ -8,13 +8,13 @@ end
 bash "docker-install" do
   user "root"
   code <<-EOH
-    wget -qO- https://get.docker.com/ | sh
+    wget -qO- https://get.docker.com/ | sh > #{log} 2>&1
     export MIRROR_SOURCE=https://registry.hub.docker.com
     export MIRROR_SOURCE_INDEX=https://registry.hub.docker.com
   EOH
 end
 
-ruby_block "Results" do
+ruby_block "print-log" do
     only_if { ::File.exists?(log) }
     block do
         print "\n"
