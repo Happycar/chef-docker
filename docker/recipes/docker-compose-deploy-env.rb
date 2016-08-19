@@ -56,12 +56,9 @@ node[:deploy].each do |application, deploy|
   
   bash "docker-compose stop previous" do
     user "root"
-    cwd deploy[:deploy_to] + "/releases/"
     code <<-EOH
-      for i in $(find . -name 'docker-compose.yml' );
-      do
-        docker-compose down ${i} || true
-      done  
+      docker stop $(docker ps -a -q) || true
+      docker rm $(docker ps -a -q) || true
     EOH
   end
   
