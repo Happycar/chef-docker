@@ -54,12 +54,11 @@ node[:deploy].each do |application, deploy|
     EOH
   end
   
-  bash "docker-compose stop previous" do
-    environment composeEnv
+  bash "docker stop previous" do
     user "root"
-    cwd deploy[:deploy_to] + "/releases/"
     code <<-EOH
-      cd $(ls | sort -r | head -2 | tail -1) && docker-compose down
+      docker stop $(docker ps -a -q)
+      docker rm $(docker ps -a -q)
     EOH
   end
   
