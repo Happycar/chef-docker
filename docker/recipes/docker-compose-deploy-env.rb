@@ -60,7 +60,7 @@ node[:deploy].each do |application, deploy|
     code <<-EOH
       for i in $(find . -name 'docker-compose.yml' );
       do
-        docker-compose down ${i}
+        docker-compose down ${i} || true
       done  
     EOH
   end
