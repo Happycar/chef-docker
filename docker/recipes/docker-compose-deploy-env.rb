@@ -54,7 +54,7 @@ node[:deploy].each do |application, deploy|
     EOH
   end
   
-  bash "docker-compose stop previous" do
+  bash "docker stop previous" do
     user "root"
     code <<-EOH
       docker stop $(docker ps -a -q)
