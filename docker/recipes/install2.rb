@@ -1,6 +1,6 @@
 Chef::Log.info(" === :: Docker Install :: === ")
 
-log = "/tmp/docker-install.log";
+log = "/tmp/docker-install.log"
 aufs = "/tmp/aufs-installed"
 docker = "/usr/bin/docker"
 
@@ -13,12 +13,12 @@ Chef::Log.info("Install aufs ...")
 # fixes the "module aufs not found" error that prevents docker install on some kernels
 bash "aufs-install" do
   user "root"	
-  not_if { File.exists?(aufs) }
+  not_if { File.exists?("/tmp/aufs-installed") }
   code <<-EOH
     apt-get install lxc wget bsdtar curl -y
     apt-get install linux-image-extra-$(uname -r) -y
     modprobe aufs
-    touch #{aufs}
+    touch "/tmp/aufs-installed"
   EOH
 end
 
