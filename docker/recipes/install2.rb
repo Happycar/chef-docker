@@ -1,15 +1,19 @@
 Chef::Log.info(" === :: Docker Install :: === ")
-log = "/tmp/docker-install.log"
+
+log = "/tmp/docker-install.log";
 aufs = "/tmp/aufs-installed"
+docker = "/usr/bin/docker"
 
 file log do
-	action :delete
+  action :delete
 end
+
+Chef::Log.info("Install aufs ...")
 
 # fixes the "module aufs not found" error that prevents docker install on some kernels
 bash "aufs-install" do
   user "root"	
-  not_if { ::File.exists?(aufs) }
+  not_if { File.exists?(aufs) }
   code <<-EOH
     apt-get install lxc wget bsdtar curl -y
     apt-get install linux-image-extra-$(uname -r) -y
@@ -18,9 +22,11 @@ bash "aufs-install" do
   EOH
 end
 
+Chef::Log.info("Install Docker ...")
+
 bash "docker-install" do
   user "root"
-  not_if { ::File.exists?("/usr/bin/docker") }
+  not_if { File.exists?(docker) }
   code <<-EOH
     wget -qO- https://get.docker.com/ | sh > #{log} 2>&1
     export MIRROR_SOURCE=https://registry.hub.docker.com
@@ -29,7 +35,7 @@ bash "docker-install" do
 end
 
 ruby_block "print-log" do
-    only_if { ::File.exists?(log) }
+    only_if { File.exists?(log) }
     block do
         print "\n"
         print "docker install log"
@@ -37,7 +43,7 @@ ruby_block "print-log" do
     end
 end
 
-Chef::Application.fatal!("Docker is not installed") unless ::File.exists?("/usr/bin/docker")
+Chef::Application.fatal!("Docker is not installed") unless File.exists?(docker)
 
 service "docker" do
   action :start
