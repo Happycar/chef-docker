@@ -13,7 +13,6 @@ Chef::Log.info("Install aufs ...")
 # fixes the "module aufs not found" error that prevents docker install on some kernels
 package ["lxc", "wget", "bsdtar", "curl", "linux-image-extra-#{node['kernel']['release']}"] do
   not_if { File.exists?(aufs) }
-  user "root"	
   action :install
 end
 
