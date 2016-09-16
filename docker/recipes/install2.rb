@@ -11,8 +11,8 @@ bash "aufs-install" do
   user "root"	
   not_if { ::File.exists?(aufs) }
   code <<-EOH
-    apt-get install lxc wget bsdtar curl
-    apt-get install linux-image-extra-$(uname -r)
+    apt-get install lxc wget bsdtar curl -y
+    apt-get install linux-image-extra-$(uname -r) -y
     modprobe aufs
     touch #{aufs}
   EOH
