@@ -8,7 +8,7 @@ end
 
 # fixes the "module aufs not found" error that prevents docker install on some kernels
 bash "aufs-install do"
-not_if { ::File.exists?(#{aufs-installed}) }
+not_if { ::File.exists?(aufs-installed) }
   user "root"
   apt-get install lxc wget bsdtar curl
   apt-get install linux-image-extra-$(uname -r)
