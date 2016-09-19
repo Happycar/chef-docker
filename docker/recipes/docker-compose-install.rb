@@ -1,7 +1,5 @@
 Chef::Log.info(" === :: Docker Compose install :: === ")
 
-Chef::Application.fatal!("docker is not installed") unless ::File.exists?("/usr/bin/docker")
-
 bash "docker-compose-install" do
   user "root"
   code <<-EOH
