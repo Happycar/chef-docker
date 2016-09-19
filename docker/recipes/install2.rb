@@ -1,3 +1,5 @@
+Chef::Log.level = :debug
+
 Chef::Log.info(" === :: Docker Install :: === ")
 
 bash "docker-install" do
