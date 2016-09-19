@@ -6,6 +6,7 @@ bash "docker-install" do
   user "root"
   not_if { ::File.exists?("/usr/bin/docker") }
   code <<-EOH
+    set -x
     apt-get update
     apt-get install apt-transport-https ca-certificates -y
     apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
