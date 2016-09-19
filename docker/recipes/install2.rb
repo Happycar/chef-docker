@@ -2,9 +2,9 @@ Chef::Log.level = :debug
 
 Chef::Log.info(" === :: Docker Install :: === ")
 
-logfile = "/tmp/docker-install.log"
+logfile = "/var/log/docker-install.log"
 file logfile do
-    action :delete
+    action :create
 end
 
 bash "Install Docker" do
