@@ -9,7 +9,8 @@ end
 
 bash "Install Docker" do
   user "root"
-  not_if { ::File.exists?("/usr/bin/docker") }
+  not_if { File.exists?("/usr/bin/docker") }
+  ignore_failure true
   code <<-EOH
     apt-get update >> #{logfile}
     apt-get install apt-transport-https ca-certificates -y >> #{logfile}
@@ -22,7 +23,7 @@ bash "Install Docker" do
 end
 
 ruby_block "Print Logs" do
-    only_if { ::File.exists?(logfile) }
+    only_if { File.exists?(logfile) }
     block do
         print "\n"
         File.open(logfile).each do |line|
@@ -31,7 +32,7 @@ ruby_block "Print Logs" do
     end
 end
 
-Chef::Application.fatal!("Docker is not installed") unless ::File.exists?("/usr/bin/docker")
+Chef::Application.fatal!("Docker is not installed") unless File.exists?("/usr/bin/docker")
 
 service "docker" do
   action :start
