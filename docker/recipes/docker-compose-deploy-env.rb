@@ -42,6 +42,7 @@ node[:deploy].each do |application, deploy|
   end
   
   composeEnv["IMAGE_VERSION"] = imageVersion
+  composeEnv["DOCKER_HOST"]   = node[:opsworks][:instance][:private_ip]
   
   Chef::Log.info('IMAGE_VERSION set to ' + imageVersion)
   
