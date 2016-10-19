@@ -69,7 +69,7 @@ node[:deploy].each do |application, deploy|
     user "root"
     cwd deploy[:deploy_to] + "/current/"
     code <<-EOH
-      docker-compose up -d --remove-orphans --project-name #{application}
+      docker-compose --project-name "#{application}" up -d --remove-orphans
     EOH
   end
   
