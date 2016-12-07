@@ -11,7 +11,6 @@ bash "cloudwatch-enhanced-monitoring-setup" do
     EOH
 end
 
-
 cron 'cloudwatch-enhanced-monitoring-cron' do
     user 'root'
     minute '*'
