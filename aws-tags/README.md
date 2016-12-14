@@ -2,7 +2,7 @@
 How?
 ====
 
-Add `ec2::assign-tags` recipe to your layers runlist
+Add `aws-tags::ec2` recipe to your layers runlist
 
 Add a section to your `Custom JSON` and set your own list of tags, eg:
 

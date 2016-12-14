@@ -1,4 +1,4 @@
-name             "ec2"
+name             "aws-tags"
 
 maintainer       "Maik Schmidt"
 maintainer_email "maik.schmidt@happycar.de"
@@ -9,4 +9,4 @@ version          "1.0.0"
 
 depends 'aws', '= 2.9.3'
 
-provides 'ec2::assign-tags'
+provides 'aws-tags::ec2'
