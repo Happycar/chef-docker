@@ -3,7 +3,7 @@ name             "ec2"
 maintainer       "Maik Schmidt"
 maintainer_email "maik.schmidt@happycar.de"
 license          "Apache"
-description      "Sets tags on EC2 instances when using OpsWorks"
+description      "Assign tags on EC2 instances when using OpsWorks"
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          "1.0.0"
 
