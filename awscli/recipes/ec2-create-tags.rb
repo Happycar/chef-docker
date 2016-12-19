@@ -1,6 +1,6 @@
-Chef::Log.info(" === :: EC2 - Assign Tags :: === ")
+Chef::Log.info(" === :: AWS CLI - EC2 - Create Tags :: === ")
 
-bash "ec2-assign-tags-setup" do
+bash "awscli-setup" do
     user "root"
     code <<-EOH
         apt-get install -y unzip
@@ -9,7 +9,13 @@ bash "ec2-assign-tags-setup" do
         unzip awscli-bundle.zip
         rm awscli-bundle.zip
         ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
-        TAGS='#{node[:ec2_tags]}'
+    EOH
+end
+
+bash "awscli-ec2-create-tags" do
+    user "root"
+    code <<-EOH
+        TAGS='#{node[:awscli][:ec2-create-tags]}'
         JSON_TAGS=$(echo ${TAGS} | sed -e 's/=>/:/g')
         JSON_TAGS=$(echo ${JSON_TAGS} | sed -e 's/"/\\"/g')
         echo ${TAGS}
