@@ -10,9 +10,10 @@ bash "ec2-assign-tags-setup" do
         rm awscli-bundle.zip
         ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
         TAGS='#{node[:ec2_tags]}'
-        TAGS=$(echo ${TAGS} | sed -e 's/=>/:/g')
-        TAGS=$(echo ${TAGS} | sed -e 's/"/\\"/g')
+        JSON_TAGS=$(echo ${TAGS} | sed -e 's/=>/:/g')
+        JSON_TAGS=$(echo ${JSON_TAGS} | sed -e 's/"/\\"/g')
         echo ${TAGS}
-        aws ec2 create-tags --region #{node[:opsworks][:instance][:region]} --resources #{node[:opsworks][:instance][:aws_instance_id]} --cli-input-json $(echo ${TAGS})
+        echo ${JSON_TAGS}
+        aws ec2 create-tags --region #{node[:opsworks][:instance][:region]} --resources #{node[:opsworks][:instance][:aws_instance_id]} --cli-input-json $(echo ${JSON_TAGS})
     EOH
 end
