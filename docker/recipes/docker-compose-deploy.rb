@@ -27,7 +27,7 @@ node[:deploy].each do |application, deploy|
       deployEnv = deploy[:environment_variables].to_hash
       nodeEnv = node[:environment_variables].to_hash
   
-      composeEnv = nodeEnv.merge(deployEnv)
+      composeEnv = nodeEnv.merge!(deployEnv)
 
       composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
       composeEnv["HOST_NAME"] = node[:opsworks][:instance][:hostname]
