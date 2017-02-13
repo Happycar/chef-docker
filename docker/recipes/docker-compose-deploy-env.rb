@@ -33,7 +33,7 @@ node[:deploy].each do |application, deploy|
   deployEnv = deploy[:environment_variables].to_hash
   nodeEnv = node[:environment_variables].to_hash
   
-  composeEnv = deployEnv.merge(nodeEnv)
+  composeEnv = nodeEnv.merge(deployEnv)
   
   imageVersion = "latest"
   

@@ -24,8 +24,13 @@ node[:deploy].each do |application, deploy|
     if ::File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
-      composeEnv = deploy[:environment_variables].to_hash
+      deployEnv = deploy[:environment_variables].to_hash
+      nodeEnv = node[:environment_variables].to_hash
+  
+      composeEnv = nodeEnv.merge!(deployEnv)
+
       composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
+      composeEnv["HOST_NAME"] = node[:opsworks][:instance][:hostname]
 
       bash "docker-compose pull" do
         user "root"
