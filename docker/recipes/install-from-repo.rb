@@ -36,7 +36,3 @@ code <<-EOH
   apt-get install docker-ce=#{DOCKER_VERSION}
 EOH
 end
-
-service "docker" do
-  action :start
-end
