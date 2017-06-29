@@ -21,7 +21,7 @@ code <<-EOH
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg > docker.gpg
 
   # verify fingerprint
-  gpg --with-fingerprint test.gpg | grep "9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD89"
+  gpg --with-fingerprint docker.gpg | grep "9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD89"
 
   # exit if it doesn't match (as recommended)
   if [[ $? != 0 ]]; then 
