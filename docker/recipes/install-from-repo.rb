@@ -25,7 +25,6 @@ code <<-EOH
 
   # exit if it doesn't match (as recommended)
   if [[ $? != 0 ]]; then 
-    Chef::Log.fatal('Docker GPG Key fingerprint mismatch. Aborting. ')
     raise
   fi
   
