@@ -19,6 +19,14 @@ code <<-EOH
     
   # download dockers official GPG key
   curl -fsSL https://download.docker.com/linux/ubuntu/gpg > docker.gpg
+
+  # verify fingerprint
+  gpg --with-fingerprint test.gpg | grep "9DC8 5822 9FC7 DD38 854A  E2D8 8D81 803C 0EBF CD89"
+
+  # exit if it doesn't match (as recommended)
+  if [[ $? != 0 ]]; then 
+    Chef::Application.fatal!("Docker GPG Key fingerprint doesn't match! Aborting.")
+  fi
   
   # add to keyring
   apt-key add docker.gpg
