@@ -9,7 +9,7 @@ Chef::Log.info(" attempting to install DOCKER_VERSION #{DOCKER_VERSION}")
   
 code <<-EOH
   apt-get update
-  apt-get install \
+  apt-get install -y \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -31,6 +31,6 @@ code <<-EOH
    
   # install docker-ce 
   apt-get update
-  apt-get install docker-ce=#{DOCKER_VERSION}
+  apt-get install -y docker-ce=#{DOCKER_VERSION}
 EOH
 end
