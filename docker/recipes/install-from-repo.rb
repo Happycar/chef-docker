@@ -25,7 +25,7 @@ code <<-EOH
 
   # exit if it doesn't match (as recommended)
   if [[ $? != 0 ]]; then 
-    Chef::Application.fatal!("Docker GPG Key fingerprint doesn't match! Aborting.")
+    Chef::Application.fatal!("Docker GPG Key fingerprint mismatch! Aborting.")
   fi
   
   # add to keyring
