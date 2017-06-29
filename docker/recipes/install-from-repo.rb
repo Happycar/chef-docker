@@ -5,10 +5,6 @@ user "root"
 # default docker version to use
 DOCKER_VERSION = "17.06.0~ce-0~ubuntu"
   
-unless node[:deploy][:environment_variables][:DOCKER_VERSION].nil?
-  DOCKER_VERSION = node[:deploy][:environment_variables][:DOCKER_VERSION]
-end
-
 Chef::Log.info(" attempting to install DOCKER_VERSION #{DOCKER_VERSION}")  
   
 code <<-EOH
