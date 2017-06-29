@@ -47,7 +47,7 @@ node[:deploy].each do |application, deploy|
   bash "docker-login" do
     user "root"
     code <<-EOH
-      docker login -u #{deploy[:environment_variables][:registry_username]} -p #{deploy[:environment_variables][:registry_password]} -e #{deploy[:environment_variables][:registry_email]}
+      docker login -u #{deploy[:environment_variables][:registry_username]} -p #{deploy[:environment_variables][:registry_password]}
     EOH
   end
   Chef::Log.info('docker-login stop')
