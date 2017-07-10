@@ -56,5 +56,6 @@ template "/usr/local/nagios/etc/objects/hosts.cfg" do
 end
 
 execute 'nagios reload' do
+  user "root"
   command '/etc/init.d/nagios reload'
 end
