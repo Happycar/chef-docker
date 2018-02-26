@@ -20,17 +20,19 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  unless deploy[:environment_variables].nil? 
+  unless deploy[:environment_variables].nil?
     if ::File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
       deployEnv = deploy[:environment_variables].to_hash
       nodeEnv = node[:environment_variables].to_hash
-  
+
       composeEnv = nodeEnv.merge!(deployEnv)
 
       composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
       composeEnv["HOST_NAME"] = node[:opsworks][:instance][:hostname]
+      composeEnv['AWS_KEY'] = composeEnv['AWS_ACCESS_KEY_ID']
+      composeEnv['AWS_SECRET'] = composeEnv['AWS_SECRET_ACCESS_KEY']
 
       bash "docker-compose pull" do
         user "root"
@@ -57,9 +59,9 @@ node[:deploy].each do |application, deploy|
         EOH
       end
 
-      # removes all unused images 
-      # exited containers 
-      # unused volumes 
+      # removes all unused images
+      # exited containers
+      # unused volumes
       bash "docker cleanup" do
         user "root"
         code <<-EOH
