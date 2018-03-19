@@ -31,8 +31,10 @@ node[:deploy].each do |application, deploy|
 
       composeEnv['PRIVATE_IP'] = node[:opsworks][:instance][:private_ip]
       composeEnv["HOST_NAME"] = node[:opsworks][:instance][:hostname]
-      composeEnv['AWS_KEY'] = composeEnv['AWS_ACCESS_KEY_ID']
-      composeEnv['AWS_SECRET'] = composeEnv['AWS_SECRET_ACCESS_KEY']
+      # composeEnv['AWS_KEY'] = composeEnv['AWS_ACCESS_KEY_ID']
+      # composeEnv['AWS_SECRET'] = composeEnv['AWS_SECRET_ACCESS_KEY']
+
+      puts composeEnv.to_hash
 
       bash "docker-compose pull" do
         user "root"
