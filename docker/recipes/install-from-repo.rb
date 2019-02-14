@@ -30,7 +30,7 @@ bash "veirfy  GPG key and add repository" do
 
     # exit if it doesn't match (as recommended)
     if [[ $? != 0 ]]; then
-    raise
+        raise
     fi
 
     # add to keyring
@@ -38,9 +38,9 @@ bash "veirfy  GPG key and add repository" do
 
     # setup stable repository
     sudo add-apt-repository \
-    "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
-    $(lsb_release -cs) \
-    stable"
+        "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) \
+        stable"
   EOH
 end
 
@@ -48,7 +48,7 @@ bash "install docker-ce" do
   user "root"
   code <<-EOH
     # install docker-ce
-  apt-get update
-  apt-get install -y docker-ce=#{DOCKER_VERSION}
+    apt-get update
+    apt-get install --yes --force-yes docker-ce=#{DOCKER_VERSION}
   EOH
 end
