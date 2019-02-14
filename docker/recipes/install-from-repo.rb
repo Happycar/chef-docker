@@ -1,6 +1,4 @@
 Chef::Log.info(" === :: Docker INSTALL from repository :: === ")
-bash "docker-install" do
-user "root"
 
 # default docker version to use
 DOCKER_VERSION = "18.06.1~ce~3-0~ubuntu"
