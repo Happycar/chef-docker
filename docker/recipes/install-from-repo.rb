@@ -14,7 +14,7 @@ bash "prepare system" do
         ca-certificates \
         curl \
         software-properties-common \
-        linux-image-extra-$(uname -r) \
+        linux-image-extra-3.13.0-115-generic \
         linux-image-extra-virtual
   EOH
 end
