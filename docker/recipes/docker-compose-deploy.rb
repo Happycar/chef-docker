@@ -63,9 +63,7 @@ node[:deploy].each do |application, deploy|
       bash "docker cleanup" do
         user "root"
         code <<-EOH
-          docker ps -q -f status=exited | xargs --no-run-if-empty docker rm
-          docker images -q -f dangling=true | xargs --no-run-if-empty docker rmi
-          docker volume ls -q -f dangling=true | xargs --no-run-if-empty docker volume rm
+          docker system prune --volumes -f
         EOH
       end
 
