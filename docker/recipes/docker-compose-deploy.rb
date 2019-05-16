@@ -40,13 +40,13 @@ node[:deploy].each do |application, deploy|
         EOH
       end
 
-      bash "docker-compose stop previous" do
-        user "root"
-        cwd deploy[:deploy_to] + "/releases/"
-        code <<-EOH
-          cd $(ls | sort -r | head -2 | tail -1) && @docker-compose -p app down || true
-        EOH
-      end
+      # bash "docker-compose stop previous" do
+      #   user "root"
+      #   cwd deploy[:deploy_to] + "/releases/"
+      #   code <<-EOH
+      #     cd $(ls | sort -r | head -2 | tail -1) && docker-compose -p app down || true
+      #   EOH
+      # end
 
       bash "docker-compose start current" do
         user "root"
@@ -68,10 +68,10 @@ node[:deploy].each do |application, deploy|
       end
 
     else
-      Chef::Log.info("Cant't deploy, docker-compose file does not exists")
+      raise "Cant't deploy, docker-compose file does not exists"
     end
   else
-      Chef::Log.info("Cant't deploy, ENV is empty or docker-compose file does not exists")
+      raise "Cant't deploy, ENV is empty or docker-compose file does not exists"
   end
 
 end
