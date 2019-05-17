@@ -21,13 +21,7 @@ node[:deploy].each do |application, deploy|
   end
 
   unless deploy[:environment_variables].nil?
-    bash "ls current" do
-      user "root"
-      cwd "#{deploy[:deploy_to]}/current/"
-      code <<-EOH
-        ls -la
-      EOH
-    end
+    Chef::Log.info("#{deploy[:deploy_to]}/current/docker-compose.yml")
 
     if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
