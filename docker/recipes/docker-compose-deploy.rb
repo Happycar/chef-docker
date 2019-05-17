@@ -21,7 +21,7 @@ node[:deploy].each do |application, deploy|
   end
 
   unless deploy[:environment_variables].nil?
-    if ::File.exists?(deploy[:deploy_to] + "/current/docker-compose.yml")
+    if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
       deployEnv = deploy[:environment_variables].to_hash
@@ -34,32 +34,21 @@ node[:deploy].each do |application, deploy|
 
       bash "docker-compose pull" do
         user "root"
-        cwd deploy[:deploy_to] + "/current/"
+        cwd "#{deploy[:deploy_to]}/current/"
         code <<-EOH
           docker-compose pull
         EOH
       end
 
-      # bash "docker-compose stop previous" do
-      #   user "root"
-      #   cwd deploy[:deploy_to] + "/releases/"
-      #   code <<-EOH
-      #     cd $(ls | sort -r | head -2 | tail -1) && docker-compose -p app down || true
-      #   EOH
-      # end
-
-      bash "docker-compose start current" do
+      bash "docker-compose start" do
         user "root"
         environment composeEnv
-        cwd deploy[:deploy_to] + "/current/"
+        cwd "#{deploy[:deploy_to]}/current/"
         code <<-EOH
-          docker-compose -p app up -d
+          docker-compose -p app up --force-recreate -d
         EOH
       end
 
-      # removes all unused images
-      # exited containers
-      # unused volumes
       bash "docker cleanup" do
         user "root"
         code <<-EOH
