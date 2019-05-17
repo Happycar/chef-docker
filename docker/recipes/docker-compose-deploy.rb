@@ -4,6 +4,7 @@ Chef::Log.info("Entering docker-compose-deploy")
 
 node[:deploy].each do |application, deploy|
 
+  Chef::Log.info("deploy #{application} to #{node[:opsworks][:instance][:layers].first})
   if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
     Chef::Log.debug("Skipping deploy::docker application #{application} as it is not deployed to this layer")
     next
@@ -21,8 +22,6 @@ node[:deploy].each do |application, deploy|
   end
 
   unless deploy[:environment_variables].nil?
-    Chef::Log.info("#{deploy[:deploy_to]}/current/docker-compose.yml")
-
     if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
