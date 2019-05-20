@@ -22,8 +22,9 @@ node[:deploy].each do |application, deploy|
 
   bash "debug" do
     user "root"
-    cwd "#{deploy[:deploy_to]}"
+    cwd deploy[:deploy_to]
     code <<-EOH
+      echo "Test" > /srv/www/log
       ls -la >> /srv/www/log
     EOH
   end
@@ -71,6 +72,8 @@ node[:deploy].each do |application, deploy|
     else
       raise "Cant't deploy, docker-compose file does not exists at #{deploy[:deploy_to]}/current/docker-compose.yml"
     end
+
+
   else
       raise "Cant't deploy, ENV is empty or docker-compose file does not exists"
   end
