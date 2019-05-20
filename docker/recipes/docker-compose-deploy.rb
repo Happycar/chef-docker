@@ -20,32 +20,25 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  # unless ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
-  #     link webapp_dir do
-  #       to current_dir
-  #       action :create
-  #     end
-  # end
+  bash "debug" do
+    user "root"
+    cwd "#{deploy[:deploy_to]}"
+    code <<-EOH
+      ls -la >> /srv/www/log
+    EOH
+  end
+
+  ruby_block "log" do
+    only_if { ::File.exists?("/srv/www/log") }
+    block do
+      print "\n"
+      File.open("/srv/www/log").each do |line|
+        print line
+      end
+    end
+  end
 
   unless deploy[:environment_variables].nil?
-
-    bash "debug" do
-        user "root"
-        cwd "#{deploy[:deploy_to]}/"
-        code <<-EOH
-          ls -la >> /srv/www/log
-        EOH
-    end
-
-    ruby_block "log" do
-        only_if { ::File.exists?("/srv/www/log") }
-        block do
-            print "\n"
-            File.open("/srv/www/log").each do |line|
-                print line
-            end
-        end
-    end
 
     if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
