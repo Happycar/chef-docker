@@ -20,6 +20,7 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
+  Chef::Log.info('log folder contents')
   bash "debug" do
     user "root"
     cwd deploy[:deploy_to]
@@ -40,7 +41,7 @@ node[:deploy].each do |application, deploy|
   end
 
   unless deploy[:environment_variables].nil?
-
+    Chef::Log.info('ENV is provided')
     if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
