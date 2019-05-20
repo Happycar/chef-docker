@@ -20,26 +20,6 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
-  Chef::Log.info('log folder contents')
-  bash "debug" do
-    user "root"
-    cwd deploy[:deploy_to]
-    code <<-EOH
-      echo "Test" > /srv/www/log
-      ls -la >> /srv/www/log
-    EOH
-  end
-
-  ruby_block "log" do
-    only_if { ::File.exists?("/srv/www/log") }
-    block do
-      print "\n"
-      File.open("/srv/www/log").each do |line|
-        print line
-      end
-    end
-  end
-
   unless deploy[:environment_variables].nil?
     Chef::Log.info('ENV is provided')
     if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
@@ -71,7 +51,7 @@ node[:deploy].each do |application, deploy|
       end
 
     else
-      raise "Cant't deploy, docker-compose file does not exists at #{deploy[:deploy_to]}/current/docker-compose.yml"
+        Chef::Log.error("Cant't deploy, docker-compose file does not exists at #{deploy[:deploy_to]}/current/docker-compose.yml")
     end
 
 
