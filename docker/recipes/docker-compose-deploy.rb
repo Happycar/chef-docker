@@ -4,9 +4,6 @@ Chef::Log.info("Entering docker-compose-deploy")
 
 node[:deploy].each do |application, deploy|
 
-  Chef::Log.info("deploy application to #{node[:opsworks][:instance][:layers].first}")
-  Chef::Log.info("target layer: #{deploy[:environment_variables][:layer]}")
-
   if node[:opsworks][:instance][:layers].first != deploy[:environment_variables][:layer]
     Chef::Log.debug("Skipping deploy::docker application #{application} as it is not deployed to this layer")
     next
@@ -23,7 +20,34 @@ node[:deploy].each do |application, deploy|
     app application
   end
 
+  # unless ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
+  #     link webapp_dir do
+  #       to current_dir
+  #       action :create
+  #     end
+  # end
+
   unless deploy[:environment_variables].nil?
+
+    bash "debug" do
+        user "root"
+        live_stream true
+        cwd "#{deploy[:deploy_to]}/"
+        code <<-EOH
+          ls -la >> /srv/www/log
+        EOH
+    end
+
+    ruby_block "log" do
+        only_if { ::File.exists?("/srv/www/log") }
+        block do
+            print "\n"
+            File.open("/srv/www/log").each do |line|
+                print line
+            end
+        end
+    end
+
     if ::File.exists?("#{deploy[:deploy_to]}/current/docker-compose.yml")
       Chef::Log.info('docker-compose-run start')
 
@@ -48,21 +72,22 @@ node[:deploy].each do |application, deploy|
         environment composeEnv
         cwd "#{deploy[:deploy_to]}/current/"
         code <<-EOH
-          docker-compose -p app up --force-recreate -d
+          docker-compose -p app up --renew-anon-volumes -d
         EOH
       end
 
-      bash "docker cleanup" do
-        user "root"
-        code <<-EOH
-          docker system prune --volumes -f
-        EOH
-      end
     else
       raise "Cant't deploy, docker-compose file does not exists at #{deploy[:deploy_to]}/current/docker-compose.yml"
     end
   else
       raise "Cant't deploy, ENV is empty or docker-compose file does not exists"
+  end
+
+  bash "docker cleanup" do
+    user "root"
+    code <<-EOH
+      docker system prune --volumes -f
+    EOH
   end
 
 end
