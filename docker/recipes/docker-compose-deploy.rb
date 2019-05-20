@@ -59,7 +59,7 @@ node[:deploy].each do |application, deploy|
         EOH
       end
     else
-      raise "Cant't deploy, docker-compose file does not exists"
+      raise "Cant't deploy, docker-compose file does not exists at #{deploy[:deploy_to]}/current/docker-compose.yml"
     end
   else
       raise "Cant't deploy, ENV is empty or docker-compose file does not exists"
