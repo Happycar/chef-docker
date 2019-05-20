@@ -46,7 +46,7 @@ node[:deploy].each do |application, deploy|
         environment composeEnv
         cwd "#{deploy[:deploy_to]}/current/"
         code <<-EOH
-          docker-compose -p app up --renew-anon-volumes -d
+          docker-compose -p app up --force-recreate -d
         EOH
       end
 
