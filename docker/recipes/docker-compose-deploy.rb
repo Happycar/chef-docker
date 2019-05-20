@@ -31,7 +31,6 @@ node[:deploy].each do |application, deploy|
 
     bash "debug" do
         user "root"
-        live_stream true
         cwd "#{deploy[:deploy_to]}/"
         code <<-EOH
           ls -la >> /srv/www/log
