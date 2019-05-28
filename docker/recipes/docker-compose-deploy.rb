@@ -41,6 +41,15 @@ node[:deploy].each do |application, deploy|
         EOH
       end
 
+      bash "docker-compose down" do
+        user "root"
+        environment composeEnv
+        cwd "#{deploy[:deploy_to]}/current/"
+        code <<-EOH
+          docker-compose -p app down
+        EOH
+      end
+
       bash "docker-compose start" do
         user "root"
         environment composeEnv
